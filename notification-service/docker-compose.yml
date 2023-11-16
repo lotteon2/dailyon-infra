@@ -1,0 +1,30 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - 27017:27017
+    expose:
+      - 27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 11111111
+      MONGO_INITDB_DATABASE: notification-service
+    networks:
+      dailyon-network:
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 9000:8081
+    expose:
+      - 9000
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 11111111
+      ME_CONFIG_MONGODB_URL: mongodb://root:11111111@mongo:27017
+    networks:
+      dailyon-network:
+networks:
+  dailyon-network:
+    name: dailyon-network
