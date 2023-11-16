@@ -5,7 +5,7 @@ services:
     ports:
       - "2181:2181"
     networks:
-      lotdiz-network:
+      dailyon-network:
   kafka:
     image: wurstmeister/kafka
     ports:
@@ -20,8 +20,8 @@ services:
     depends_on:
       - zookeeper
     networks:
-      lotdiz-network:
+      dailyon-network:
 
 networks:
-  lotdiz-network:
-    name: lotdiz-network
+  dailyon-network:
+    name: dailyon-network

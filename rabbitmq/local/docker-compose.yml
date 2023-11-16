@@ -16,7 +16,7 @@ services:
       - 5672
       - 15672
     networks:
-      lotdiz-network:
+      dailyon-network:
 networks:
-  lotdiz-network:
-    name: lotdiz-network
+  dailyon-network:
+    name: dailyon-network
