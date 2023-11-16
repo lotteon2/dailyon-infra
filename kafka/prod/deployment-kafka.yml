@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-deployment
+  labels:
+    app: kafka-service
+    profile: prod
+spec:
+  # Deployment Spec
+  selector:
+    # Match mapping pod's label
+    matchLabels:
+      app: kafka-service
+      profile: prod
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  replicas: 1
+  # Pod Spec
+  template:
+    metadata:
+      name: kafka-pod
+      # Set pod's label
+      labels:
+        app: kafka-service
+        profile: prod
+    spec:
+      containers:
+        - name: kafka-service
+          image: confluentinc/cp-kafka:7.0.1
+          ports:
+          - containerPort: 9092
+          env:
+          - name: KAFKA_BROKER_ID
+            value: "1"
+          - name: KAFKA_ZOOKEEPER_CONNECT
+            value: 'zookeeper-service:2181'
+          - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+            value: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+          - name: KAFKA_ADVERTISED_LISTENERS
+            value: PLAINTEXT://:29092,PLAINTEXT_INTERNAL://kafka-service:9092
+          - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+            value: "1"
+          - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+            value: "1"
+          - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+            value: "1"
+          resources:
+            requests:
+              memory: "1Gi"

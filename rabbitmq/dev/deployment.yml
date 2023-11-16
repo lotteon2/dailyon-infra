@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+  labels:
+    app: rabbitmq-service
+    profile: dev
+spec:
+  # Deployment Spec
+  selector:
+    # Match mapping pod's label
+    matchLabels:
+      app: rabbitmq-service
+      profile: dev
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  replicas: 1
+  # Pod Spec
+  template:
+    metadata:
+      name: rabbitmq-pod
+      # Set pod's label
+      labels:
+        app: rabbitmq-service
+        profile: dev
+    spec:
+      containers:
+        - name: rabbitmq-service
+          image: rabbitmq:management
+          ports:
+            - containerPort: 15672
+            - containerPort: 5672
+            - containerPort: 15671
+            - containerPort: 5671
+            - containerPort: 4369
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: guest
+            - name: RABBITMQ_DEFAULT_PASS
+              value: guest
+
