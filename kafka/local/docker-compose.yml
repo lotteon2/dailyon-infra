@@ -13,7 +13,7 @@ services:
     environment:
       KAFKA_ADVERTISED_HOST_NAME: localhost
       # 2 partition & 1 replicas
-      KAFKA_CREATE_TOPICS: "create-order:1:1,create-project:1:1,create-maker:1:1,auth-project:1:1,create-member:1:1"
+      KAFKA_CREATE_TOPICS: "create-order:1:1"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
