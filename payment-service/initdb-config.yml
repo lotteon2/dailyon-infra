@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment-initdb-config
+data:
+  initdb.sql: |
+    

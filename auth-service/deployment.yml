@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deployment
+  labels:
+    app: auth-service
+    profile: dev
+spec:
+  # Deployment Spec
+  selector:
+    # Match mapping pod's label
+    matchLabels:
+      app: auth-service
+      profile: dev
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  replicas: 1
+  # Pod Spec
+  template:
+    metadata:
+      name: auth-pod
+      # Set pod's label
+      labels:
+        app: auth-service
+        profile: dev
+    spec:
+      containers:
+        - name: auth-service
+          image: akak640/dailyon-auth-service
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+        - name: mysql
+          image: mysql:8.0.34
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "11111111"
+            - name: MYSQL_DATABASE
+              value: auth-service
+          volumeMounts:
+            - name: auth-initdb
+              mountPath: /docker-entrypoint-initdb.d
+            - name: mysql-config
+              mountPath: /etc/mysql/conf.d
+      volumes:
+        - name: auth-initdb
+          configMap:
+            name: auth-initdb-config
+        - name: mysql-config
+          configMap:
+            name: mysql-config

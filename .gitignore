@@ -1,3 +1,5 @@
 /promotion-service/docker/dynamodb/
 
 .idea
+
+/config-service/.env

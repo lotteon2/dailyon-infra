@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wish-cart-initdb-config
+data:
+  initdb.sql: |
+    

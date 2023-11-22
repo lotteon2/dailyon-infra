@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigateway-deployment
+  labels:
+    app: apigateway-service
+    profile: dev
+spec:
+  # Deployment Spec
+  selector:
+    # Match mapping pod's label
+    matchLabels:
+      app: apigateway-service
+      profile: dev
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  replicas: 1
+  # Pod Spec
+  template:
+    metadata:
+      name: apigateway-pod
+      # Set pod's label
+      labels:
+        app: apigateway-service
+        profile: dev
+    spec:
+      containers:
+        - name: apigateway-service
+          image: akak640/dailyon-apigateway-service
+          ports:
+            - containerPort: 8000
+          imagePullPolicy: Always

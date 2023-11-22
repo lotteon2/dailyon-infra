@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wish-cart-deployment
+  labels:
+    app: wish-cart-service
+    profile: dev
+spec:
+  # Deployment Spec
+  selector:
+    # Match mapping pod's label
+    matchLabels:
+      app: wish-cart-service
+      profile: dev
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  replicas: 1
+  # Pod Spec
+  template:
+    metadata:
+      name: wish-cart-pod
+      # Set pod's label
+      labels:
+        app: wish-cart-service
+        profile: dev
+    spec:
+      containers:
+        - name: wish-cart-service
+          image: akak640/dailyon-wish-cart-service
+          ports:
+            - containerPort: 8086
+          imagePullPolicy: Always
+        - name: mongo
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: root
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "11111111"
+            - name: MONGO_INITDB_DATABASE
+              value: wish-cart-service
