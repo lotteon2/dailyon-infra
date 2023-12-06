@@ -31,6 +31,13 @@ spec:
       containers:
         - name: discovery-service
           image: akak640/dailyon-discovery-service
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
           ports:
             - containerPort: 8761
           imagePullPolicy: Always

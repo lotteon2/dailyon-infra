@@ -31,6 +31,13 @@ spec:
       containers:
         - name: kafka-service
           image: wurstmeister/kafka
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
           ports:
             - containerPort: 9092
           env:

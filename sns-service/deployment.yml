@@ -31,18 +31,32 @@ spec:
       containers:
         - name: sns-service
           image: akak640/dailyon-sns-service
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 8088
           imagePullPolicy: Always
         - name: mysql
           image: mysql:8.0.34
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "386Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: "11111111"
             - name: MYSQL_DATABASE
-              value: admin-service
+              value: sns-service
           volumeMounts:
             - name: sns-initdb
               mountPath: /docker-entrypoint-initdb.d
@@ -50,6 +64,13 @@ spec:
               mountPath: /etc/mysql/conf.d
         - name: redis
           image: redis:latest
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
           ports:
             - containerPort: 6379
       volumes:

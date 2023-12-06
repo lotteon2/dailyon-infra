@@ -31,11 +31,25 @@ spec:
       containers:
         - name: notification-service
           image: akak640/dailyon-notification-service
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 8082
           imagePullPolicy: Always
         - name: mongo
           image: mongo:latest
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 27017
           env:

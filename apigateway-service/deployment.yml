@@ -31,6 +31,13 @@ spec:
       containers:
         - name: apigateway-service
           image: akak640/dailyon-apigateway-service
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 8000
           imagePullPolicy: Always

@@ -31,11 +31,25 @@ spec:
       containers:
         - name: order-service
           image: akak640/dailyon-order-service
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 8089
           imagePullPolicy: Always
         - name: mysql
           image: mysql:8.0.34
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 3306
           env:

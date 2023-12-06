@@ -31,11 +31,25 @@ spec:
       containers:
         - name: product-service
           image: akak640/dailyon-product-service
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 8087
           imagePullPolicy: Always
         - name: mysql
           image: mysql:8.0.34
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 3306
           env:
@@ -49,6 +63,13 @@ spec:
             - name: mysql-config
               mountPath: /etc/mysql/conf.d
         - name: redis
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
           image: redis:latest
           ports:
             - containerPort: 6379

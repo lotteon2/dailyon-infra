@@ -31,6 +31,16 @@ spec:
       containers:
         - name: config-service
           image: akak640/dailyon-config-service
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          envFrom:
+            - configMapRef:
+                name: dailyon-config
           ports:
             - containerPort: 8888
           imagePullPolicy: Always

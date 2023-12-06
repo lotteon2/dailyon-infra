@@ -31,11 +31,25 @@ spec:
       containers:
         - name: wish-cart-service
           image: akak640/dailyon-wish-cart-service
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 8086
           imagePullPolicy: Always
         - name: mongo
           image: mongo:latest
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
           ports:
             - containerPort: 27017
           env:

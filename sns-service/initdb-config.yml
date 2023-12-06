@@ -4,4 +4,137 @@ metadata:
   name: sns-initdb-config
 data:
   initdb.sql: |
+    use sns-service;
+    CREATE TABLE member
+    (
+        id              BIGINT AUTO_INCREMENT   NOT NULL,
+        email           VARCHAR(255)            NOT NULL,
+        nickname        VARCHAR(255)            NOT NULL,
+        profile_img_url VARCHAR(255)            NOT NULL,
+        gender          VARCHAR(255)            NULL,
+        birth           VARCHAR(255)            NULL,
+        created_at      timestamp DEFAULT NOW() NOT NULL,
+        updated_at      timestamp DEFAULT NOW() NOT NULL,
+        code            VARCHAR(255)            NOT NULL,
+        point           BIGINT                  NOT NULL,
+        is_deleted      BIT(1)                  NOT NULL,
+        CONSTRAINT pk_member PRIMARY KEY (id)
+    );
+
+    CREATE TABLE follow
+    (
+        follower_id  BIGINT                 NOT NULL,
+        created_at   datetime DEFAULT NOW() NOT NULL,
+        updated_at   datetime DEFAULT NOW() NOT NULL,
+        following_id BIGINT                 NOT NULL,
+        CONSTRAINT pk_follow PRIMARY KEY (follower_id, following_id)
+    );
+
+    ALTER TABLE follow
+        ADD CONSTRAINT FK_FOLLOW_ON_FOLLOWER FOREIGN KEY (follower_id) REFERENCES member (id);
+
+    ALTER TABLE follow
+        ADD CONSTRAINT FK_FOLLOW_ON_FOLLOWING FOREIGN KEY (following_id) REFERENCES member (id);
+
+    CREATE TABLE post
+    (
+        id            BIGINT AUTO_INCREMENT  NOT NULL,
+        created_at    datetime DEFAULT NOW() NOT NULL,
+        updated_at    datetime DEFAULT NOW() NOT NULL,
+        member_id     BIGINT                 NULL,
+        title         VARCHAR(255)           NOT NULL,
+        `description` VARCHAR(300)           NULL,
+        stature       DOUBLE                 NULL,
+        weight        DOUBLE                 NULL,
+        view_count    INT      DEFAULT 0     NOT NULL,
+        like_count    INT      DEFAULT 0     NOT NULL,
+        comment_count INT      DEFAULT 0     NOT NULL,
+        is_deleted    BIT(1)   DEFAULT 0     NOT NULL,
+        CONSTRAINT pk_post PRIMARY KEY (id)
+    );
+
+    ALTER TABLE post
+        ADD CONSTRAINT FK_POST_ON_MEMBER FOREIGN KEY (member_id) REFERENCES member (id);
+    
+    CREATE TABLE hash_tag
+    (
+        id         BIGINT AUTO_INCREMENT  NOT NULL,
+        created_at datetime DEFAULT NOW() NOT NULL,
+        updated_at datetime DEFAULT NOW() NOT NULL,
+        post_id    BIGINT                 NULL,
+        name       VARCHAR(255)           NULL,
+        CONSTRAINT pk_hashtag PRIMARY KEY (id)
+    );
+
+    ALTER TABLE hash_tag
+        ADD CONSTRAINT uc_6a36557888d6c8c933b1d5701 UNIQUE (post_id, name);
+
+    ALTER TABLE hash_tag
+        ADD CONSTRAINT FK_HASHTAG_ON_POST FOREIGN KEY (post_id) REFERENCES post (id);
+
+    CREATE TABLE post_image
+    (
+        id                BIGINT AUTO_INCREMENT  NOT NULL,
+        created_at        datetime DEFAULT NOW() NOT NULL,
+        updated_at        datetime DEFAULT NOW() NOT NULL,
+        post_id           BIGINT                 NULL,
+        thumbnail_img_url VARCHAR(255)           NOT NULL,
+        img_url           VARCHAR(255)           NOT NULL,
+        CONSTRAINT pk_postimage PRIMARY KEY (id)
+    );
+
+    ALTER TABLE post_image
+        ADD CONSTRAINT FK_POSTIMAGE_ON_POST FOREIGN KEY (post_id) REFERENCES post (id);
+    
+    CREATE TABLE post_image_product_detail
+    (
+        id               BIGINT AUTO_INCREMENT  NOT NULL,
+        created_at       datetime DEFAULT NOW() NOT NULL,
+        updated_at       datetime DEFAULT NOW() NOT NULL,
+        post_image_id    BIGINT                 NULL,
+        product_id       BIGINT                 NOT NULL,
+        product_size     VARCHAR(255)           NOT NULL,
+        left_gap_percent DOUBLE                 NOT NULL,
+        top_gap_percent  DOUBLE                 NOT NULL,
+        CONSTRAINT pk_postimageproductdetail PRIMARY KEY (id)
+    );
+
+    ALTER TABLE post_image_product_detail
+        ADD CONSTRAINT FK_POSTIMAGEPRODUCTDETAIL_ON_POST_IMAGE FOREIGN KEY (post_image_id) REFERENCES post_image (id);
+    
+
+    CREATE TABLE comment
+    (
+        id            BIGINT AUTO_INCREMENT  NOT NULL,
+        created_at    datetime DEFAULT NOW() NOT NULL,
+        updated_at    datetime DEFAULT NOW() NOT NULL,
+        parent_id     BIGINT                 NULL,
+        member_id     BIGINT                 NOT NULL,
+        post_id       BIGINT                 NOT NULL,
+        `description` VARCHAR(140)           NOT NULL,
+        is_deleted    BIT(1)   DEFAULT 0     NOT NULL,
+        CONSTRAINT pk_comment PRIMARY KEY (id)
+    );
+
+    ALTER TABLE comment
+        ADD CONSTRAINT FK_COMMENT_ON_MEMBER FOREIGN KEY (member_id) REFERENCES member (id);
+
+    ALTER TABLE comment
+        ADD CONSTRAINT FK_COMMENT_ON_PARENT FOREIGN KEY (parent_id) REFERENCES comment (id);
+
+    ALTER TABLE comment
+        ADD CONSTRAINT FK_COMMENT_ON_POST FOREIGN KEY (post_id) REFERENCES post (id);
+
+    CREATE TABLE post_like
+    (
+        member_id BIGINT NOT NULL,
+        post_id   BIGINT NOT NULL,
+        CONSTRAINT pk_postlike PRIMARY KEY (member_id, post_id)
+    );
+
+    ALTER TABLE post_like
+        ADD CONSTRAINT FK_POSTLIKE_ON_MEMBER FOREIGN KEY (member_id) REFERENCES member (id);
+
+    ALTER TABLE post_like
+        ADD CONSTRAINT FK_POSTLIKE_ON_POST FOREIGN KEY (post_id) REFERENCES post (id);
     
