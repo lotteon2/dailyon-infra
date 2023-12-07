@@ -4,4 +4,120 @@ metadata:
   name: product-initdb-config
 data:
   initdb.sql: |
-    
+    create table brand (
+      id bigint not null auto_increment,
+      created_at datetime(6),
+      updated_at datetime(6),
+      is_deleted BOOLEAN default false not null,
+      name varchar(255) not null,
+      primary key (id)
+    ) engine=InnoDB;
+        
+    create table category (
+      id bigint not null auto_increment,
+      created_at datetime(6),
+      updated_at datetime(6),
+      is_deleted BOOLEAN default false not null,
+      name varchar(255) not null,
+      master_category_id bigint,
+      primary key (id)
+    ) engine=InnoDB;
+        
+    create table describe_image (
+      id bigint not null auto_increment,
+      img_url varchar(255) not null,
+      product_id bigint,
+      primary key (id)
+    ) engine=InnoDB;
+        
+    create table product (
+      id bigint not null auto_increment,
+      created_at datetime(6),
+      updated_at datetime(6),
+      code varchar(255) not null,
+      is_deleted BOOLEAN default false not null,
+      gender varchar(255) not null,
+      img_url varchar(255) not null,
+      name varchar(255) not null,
+      price integer not null,
+      type varchar(255) not null,
+      brand_id bigint,
+      category_id bigint,
+      primary key (id)
+    ) engine=InnoDB;
+        
+    create table product_size (
+      id bigint not null auto_increment,
+      created_at datetime(6),
+      updated_at datetime(6),
+      is_deleted BOOLEAN default false not null,
+      name varchar(255) not null,
+      category_id bigint,
+      primary key (id)
+    ) engine=InnoDB;
+        
+    create table product_stock (
+      product_id bigint not null,
+      product_size_id bigint not null,
+      quantity bigint not null,
+      primary key (product_id, product_size_id)
+    ) engine=InnoDB;
+        
+    create table review_aggregate (
+      product_id bigint not null,
+      avg_rating float not null,
+      review_count bigint not null,
+      primary key (product_id)
+    ) engine=InnoDB;
+        
+    alter table brand 
+      add constraint UK_rdxh7tq2xs66r485cc8dkxt77 unique (name);
+
+    alter table category 
+      add constraint UK_46ccwnsi9409t36lurvtyljak unique (name);
+
+    alter table product 
+      add constraint UK_h3w5r1mx6d0e5c6um32dgyjej unique (code);
+          
+    alter table product_size 
+      add constraint UKd5mdp3qtp2h1p7vjqp4y8ch88 unique (name, category_id);
+          
+    alter table category 
+      add constraint FKlray2xijqyh4pbmoqv5ytimje 
+      foreign key (master_category_id) 
+      references category (id);
+          
+    alter table describe_image 
+      add constraint FK7x85hs232jdhahwgj5n5dte85 
+      foreign key (product_id) 
+      references product (id);
+          
+    alter table product 
+      add constraint FKs6cydsualtsrprvlf2bb3lcam 
+      foreign key (brand_id) 
+      references brand (id);
+          
+    alter table product 
+      add constraint FK1mtsbur82frn64de7balymq9s 
+      foreign key (category_id) 
+      references category (id);
+          
+    alter table product_size 
+      add constraint FKg8p8y93lnxirp3a81b51b2aun 
+      foreign key (category_id) 
+      references category (id);
+          
+    alter table product_stock 
+      add constraint FKlpu1phje1bb3y9ww8k9fut4gh 
+      foreign key (product_id) 
+      references product (id);
+          
+    alter table product_stock 
+      add constraint FKq59hexicbfe6ke1r1jg162iaj 
+      foreign key (product_size_id) 
+      references product_size (id);
+          
+    alter table review_aggregate 
+      add constraint FKbn4603xy69cwa185g532d7v05 
+      foreign key (product_id) 
+      references product (id);

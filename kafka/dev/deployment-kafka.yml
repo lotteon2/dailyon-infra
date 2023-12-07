@@ -33,11 +33,11 @@ spec:
           image: wurstmeister/kafka
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "250m"
+              memory: "512Mi"
+              cpu: "1000m"
             limits:
-              memory: "256Mi"
-              cpu: "500m"
+              memory: "768Mi"
+              cpu: "1500m"
           ports:
             - containerPort: 9092
           env:

@@ -4,4 +4,37 @@ metadata:
   name: payment-initdb-config
 data:
   initdb.sql: |
+    use payment-service;
     
+    CREATE TABLE `payment` (
+      `id` bigint NOT NULL AUTO_INCREMENT,
+      `created_at` datetime(6) DEFAULT NULL,
+      `updated_at` datetime(6) DEFAULT NULL,
+      `member_id` bigint NOT NULL,
+      `method` varchar(255) NOT NULL,
+      `status` varchar(255) NOT NULL,
+      `total_amount` int NOT NULL,
+      `type` varchar(255) NOT NULL,
+      PRIMARY KEY (`id`),
+      KEY `idx_type` (`type`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+    CREATE TABLE `kakaopay_info` (
+      `payment_id` bigint NOT NULL,
+      `tid` varchar(255) NOT NULL,
+      PRIMARY KEY (`payment_id`),
+      CONSTRAINT `FK6fwal9ra9rg7jaqw2459cwwyf` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+    CREATE TABLE `order_payment_info` (
+      `payment_id` bigint NOT NULL,
+      `delivery_fee` int DEFAULT NULL,
+      `order_id` varchar(255) NOT NULL,
+      `total_coupon_discount_amount` int DEFAULT NULL,
+      `used_points` int DEFAULT NULL,
+      PRIMARY KEY (`payment_id`),
+      KEY `idx_order_id` (`order_id`),
+      CONSTRAINT `FK9rnvpdlnp7aqwvtin48he2ruc` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+    desc payment;
