@@ -1,3 +1,6 @@
+kubectl create -f ./kube-config/dev/namespace.yml
+kubectl create -f ./kube-config/mysql-config.yml
+
 kubectl create -f ./kafka/dev/deployment-zookeeper.yml
 kubectl create -f ./kafka/dev/service-zookeeper.yml
 
@@ -47,12 +50,6 @@ while ! kubectl get services apigateway-service &> /dev/null; do
   sleep 5
 done
 
-kubectl create -f ./kube-config/mysql-config.yml
-
-kubectl create -f ./auction-service/initdb-config.yml
-kubectl create -f ./auction-service/deployment.yml
-kubectl create -f ./auction-service/service.yml
-
 kubectl create -f ./auth-service/initdb-config.yml
 kubectl create -f ./auth-service/deployment.yml
 kubectl create -f ./auth-service/service.yml
@@ -60,6 +57,10 @@ kubectl create -f ./auth-service/service.yml
 kubectl create -f ./member-service/initdb-config.yml
 kubectl create -f ./member-service/deployment.yml
 kubectl create -f ./member-service/service.yml
+
+kubectl create -f ./auction-service/initdb-config.yml
+kubectl create -f ./auction-service/deployment.yml
+kubectl create -f ./auction-service/service.yml
 
 kubectl create -f ./notification-service/initdb-config.yml
 kubectl create -f ./notification-service/deployment.yml

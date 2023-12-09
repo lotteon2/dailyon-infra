@@ -2,16 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rabbitmq-deployment
+  namespace: dev
   labels:
     app: rabbitmq-service
-    profile: dev
 spec:
   # Deployment Spec
   selector:
     # Match mapping pod's label
     matchLabels:
       app: rabbitmq-service
-      profile: dev
   minReadySeconds: 10
   strategy:
     type: RollingUpdate
@@ -26,7 +25,6 @@ spec:
       # Set pod's label
       labels:
         app: rabbitmq-service
-        profile: dev
     spec:
       containers:
         - name: rabbitmq-service
@@ -49,4 +47,18 @@ spec:
               value: guest
             - name: RABBITMQ_DEFAULT_PASS
               value: guest
-
+      affinity:
+        nodeAffinity:
+          # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: type
+                  operator: In
+                  values:
+                    - Util
+                - key: size
+                  operator: In
+                  values:
+                    - Small
+                    - Medium

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: member-service
+  namespace: dev
 spec:
   type: ClusterIP
   ports:
@@ -9,4 +10,3 @@ spec:
       port: 8080
   selector:
     app: member-service
-    profile: dev

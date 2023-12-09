@@ -2,16 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kafka-deployment
+  namespace: dev
   labels:
     app: kafka-service
-    profile: dev
 spec:
   # Deployment Spec
   selector:
     # Match mapping pod's label
     matchLabels:
       app: kafka-service
-      profile: dev
   minReadySeconds: 10
   strategy:
     type: RollingUpdate
@@ -26,7 +25,6 @@ spec:
       # Set pod's label
       labels:
         app: kafka-service
-        profile: dev
     spec:
       containers:
         - name: kafka-service

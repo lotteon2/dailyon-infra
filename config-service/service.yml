@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: config-service
+  namespace: dev
 spec:
   type: ClusterIP
   ports:
@@ -9,4 +10,3 @@ spec:
       port: 8888
   selector:
     app: config-service
-    profile: dev

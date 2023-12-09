@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: zookeeper-deployment
+  namespace: dev
   labels:
     app: zookeeper-service
-    profile: dev
 spec:
   # Deployment Spec
   selector:
@@ -25,7 +25,6 @@ spec:
       # Set pod's label
       labels:
         app: zookeeper-service
-        profile: dev
     spec:
       containers:
         - name: zookeeper
