@@ -1,4 +1,5 @@
 /promotion-service/docker/dynamodb/
+/kafka/local/
 
 .idea
 

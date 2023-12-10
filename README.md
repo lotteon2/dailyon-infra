@@ -23,10 +23,16 @@ sh ./stop-local.sh
 docker exec -it [CONTAINER_NAME] /bin/bash
 ```
 
-- 토픽 전체 조회 - 컨테이너 내부에서 입력
+- 토픽 생성 - 터미널에서 입력
 
 ```shell
-kafka-topics.sh --list --bootstrap-server localhost:9092
+docker exec kafka1 kafka-topics --create --topic [TOPIC_NAME] --bootstrap-server kafka1:29092
+```
+
+- 토픽 전체 조회 - 터미널에서 입력
+
+```shell
+docker exec kafka1 kafka-topics --bootstrap-server kafka1:29092 --list
 ```
 
 - 컨슈머 모드 - 터미널에서 입력

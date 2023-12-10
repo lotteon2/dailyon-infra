@@ -1,10 +1,17 @@
+kubectl label node dailyon type=App
+kubectl label node dailyon size=Large
+kubectl label node dailyon-m02 type=App
+kubectl label node dailyon-m02 size=Medium
+kubectl label node dailyon-m03 type=Util
+kubectl label node dailyon-m03 size=Small
+
 kubectl create -f ./kube-config/dev/namespace.yml
-kubectl create -f ./kube-config/mysql-config.yml
+kubectl create -f ./kube-config/dev/mysql-config.yml
 
 kubectl create -f ./kafka/dev/deployment-zookeeper.yml
 kubectl create -f ./kafka/dev/service-zookeeper.yml
 
-while ! kubectl get services zookeeper-service &> /dev/null; do 
+while ! kubectl get services zookeeper-service -n dev &> /dev/null; do 
   echo "Waiting for zookeeper-service to become available..."
   sleep 5
 done
@@ -12,7 +19,7 @@ done
 kubectl create -f ./kafka/dev/deployment-kafka.yml
 kubectl create -f ./kafka/dev/service-kafka.yml
 
-while ! kubectl get services kafka-service &> /dev/null; do
+while ! kubectl get services kafka-service -n dev &> /dev/null; do
   echo "Waiting for kafka-service to become available..."
   sleep 5
 done
@@ -20,7 +27,7 @@ done
 kubectl create -f ./rabbitmq/dev/deployment.yml
 kubectl create -f ./rabbitmq/dev/service.yml
 
-while ! kubectl get services rabbitmq-service &> /dev/null; do
+while ! kubectl get services rabbitmq-service -n dev &> /dev/null; do
   echo "Waiting for rabbitmq-service to become available..."
   sleep 5
 done
@@ -28,16 +35,16 @@ done
 kubectl create -f ./discovery-service/deployment.yml
 kubectl create -f ./discovery-service/service.yml
 
-while ! kubectl get services discovery-service &> /dev/null; do
+while ! kubectl get services discovery-service -n dev &> /dev/null; do
   echo "Waiting for discovery-service to become available..."
   sleep 5
 done
 
-kubectl create configmap dailyon-config --from-env-file=./config-service/.env
+kubectl create configmap dailyon-config --from-env-file=./config-service/.env -n dev
 kubectl create -f ./config-service/deployment.yml
 kubectl create -f ./config-service/service.yml
 
-while ! kubectl get services config-service &> /dev/null; do
+while ! kubectl get services config-service -n dev &> /dev/null; do
   echo "Waiting for config-service to become available..."
   sleep 5
 done
@@ -45,7 +52,7 @@ done
 kubectl create -f ./apigateway-service/deployment.yml
 kubectl create -f ./apigateway-service/service.yml
 
-while ! kubectl get services apigateway-service &> /dev/null; do
+while ! kubectl get services apigateway-service -n dev &> /dev/null; do
   echo "Waiting for apigateway-service to become available..."
   sleep 5
 done

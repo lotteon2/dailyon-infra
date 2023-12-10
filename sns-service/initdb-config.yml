@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: sns-initdb-config
+  namespace: dev
 data:
   initdb.sql: |
     use sns-service;
