@@ -13,7 +13,7 @@ services:
       KAFKA_LISTENERS: 'INTERNAL://kafka1:29092,CONTROLLER://kafka1:29093,EXTERNAL://0.0.0.0:9092'
       KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka1:29092,EXTERNAL://localhost:9092'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:29093,2@kafka2:29093,3@kafka3:29093'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:29093,2@kafka2:29093'
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
@@ -38,7 +38,7 @@ services:
       KAFKA_LISTENERS: 'INTERNAL://kafka2:29092,CONTROLLER://kafka2:29093,EXTERNAL://0.0.0.0:9093'
       KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka2:29092,EXTERNAL://localhost:9093'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:29093,2@kafka2:29093,3@kafka3:29093'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:29093,2@kafka2:29093'
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
@@ -50,28 +50,29 @@ services:
     networks:
       dailyon-network:
 
-  kafka3:
-    image: confluentinc/cp-kafka
-    container_name: kafka3
-    hostname: kafka3
+  kafka-connect:
+    image: confluentinc/cp-kafka-connect
     ports:
-      - "9094:9094"
+      - 9094:8083
     environment:
-      KAFKA_NODE_ID: 3
-      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
-      KAFKA_LISTENERS: 'INTERNAL://kafka3:29092,CONTROLLER://kafka3:29093,EXTERNAL://0.0.0.0:9094'
-      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka3:29092,EXTERNAL://localhost:9094'
-      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:29093,2@kafka2:29093,3@kafka3:29093'
-      KAFKA_PROCESS_ROLES: 'broker,controller'
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
-      CLUSTER_ID: 'ciWo7IWazngRchmPES6q5A=='
-      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+      CONNECT_BOOTSTRAP_SERVERS: kafka1:29092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "sns-service"
+      CONNECT_CONFIG_STORAGE_TOPIC: "sns-service-config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "sns-service-offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "sns-service-status"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "localhost"
+      CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/etc/kafka-connect/jars"
     volumes:
-      - ./kafka3/data:/var/lib/kafka/data
+      - ./mysql-connector-java-8.0.27:/etc/kafka-connect/jars
     networks:
       dailyon-network:
 
@@ -83,12 +84,11 @@ services:
       - "8081:8081"
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'kafka1:29092,kafka2:29092,kafka3:29092'
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'kafka1:29092,kafka2:29092'
       SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:8081'
     depends_on:
       - kafka1
       - kafka2
-      - kafka3
     networks:
       dailyon-network:
 
@@ -99,11 +99,10 @@ services:
       - "9090:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: "Dailyon Kafka Cluster"
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'kafka1:29092,kafka2:29093,kafka3:29094'
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'kafka1:29092,kafka2:29093'
     depends_on:
       - kafka1
       - kafka2
-      - kafka3
     networks:
       dailyon-network:
 

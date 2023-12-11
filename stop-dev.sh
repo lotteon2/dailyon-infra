@@ -1,1 +1,1 @@
-kubectl delete all --all -n dev 
+kubectl delete all --all -n dev
