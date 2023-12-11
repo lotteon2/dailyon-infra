@@ -65,14 +65,6 @@ kubectl create -f ./member-service/initdb-config.yml
 kubectl create -f ./member-service/deployment.yml
 kubectl create -f ./member-service/service.yml
 
-kubectl create -f ./auction-service/initdb-config.yml
-kubectl create -f ./auction-service/deployment.yml
-kubectl create -f ./auction-service/service.yml
-
-kubectl create -f ./notification-service/initdb-config.yml
-kubectl create -f ./notification-service/deployment.yml
-kubectl create -f ./notification-service/service.yml
-
 kubectl create -f ./order-service/initdb-config.yml
 kubectl create -f ./order-service/deployment.yml
 kubectl create -f ./order-service/service.yml
@@ -89,14 +81,22 @@ kubectl create -f ./promotion-service/initdb-config.yml
 kubectl create -f ./promotion-service/deployment.yml
 kubectl create -f ./promotion-service/service.yml
 
-kubectl create -f ./review-service/initdb-config.yml
-kubectl create -f ./review-service/deployment.yml
-kubectl create -f ./review-service/service.yml
-
 kubectl create -f ./sns-service/initdb-config.yml
 kubectl create -f ./sns-service/deployment.yml
 kubectl create -f ./sns-service/service.yml
 
+kubectl create -f ./review-service/initdb-config.yml
+kubectl create -f ./review-service/deployment.yml
+kubectl create -f ./review-service/service.yml
+
+kubectl create -f ./notification-service/initdb-config.yml
+kubectl create -f ./notification-service/deployment.yml
+kubectl create -f ./notification-service/service.yml
+
 kubectl create -f ./wish-cart-service/initdb-config.yml
 kubectl create -f ./wish-cart-service/deployment.yml
 kubectl create -f ./wish-cart-service/service.yml
+
+kubectl create -f ./auction-service/initdb-config.yml
+kubectl create -f ./auction-service/deployment.yml
+kubectl create -f ./auction-service/service.yml

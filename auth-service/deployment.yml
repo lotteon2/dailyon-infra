@@ -37,7 +37,7 @@ spec:
               memory: "512Mi"
               cpu: "1000m"
           ports:
-            - containerPort: 8080
+            - containerPort: 8081
           imagePullPolicy: Always
         - name: mysql
           image: mysql:8.0.34

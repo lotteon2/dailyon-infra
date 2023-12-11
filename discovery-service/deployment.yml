@@ -15,7 +15,9 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
+      # 롤링 업데이트 도중 전체 pod의 개수가 replicas 값보다 얼마나 더 많이 존재할 수 있는지 설정
       maxSurge: 1
+      # 롤링 업데이트 도중 사용 불가능한 상태가 되는 pod의 최대 개수
       maxUnavailable: 0
   replicas: 1
   # Pod Spec
