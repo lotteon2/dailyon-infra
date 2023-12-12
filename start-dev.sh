@@ -8,14 +8,6 @@ kubectl label node dailyon-m03 size=Small
 kubectl create -f ./kube-config/dev/namespace.yml
 kubectl create -f ./kube-config/dev/mysql-config.yml
 
-kubectl create -f ./kafka/dev/deployment-zookeeper.yml
-kubectl create -f ./kafka/dev/service-zookeeper.yml
-
-while ! kubectl get services zookeeper-service -n dev &> /dev/null; do 
-  echo "Waiting for zookeeper-service to become available..."
-  sleep 5
-done
-
 kubectl create -f ./kafka/dev/deployment-kafka.yml
 kubectl create -f ./kafka/dev/service-kafka.yml
 
