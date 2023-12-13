@@ -39,6 +39,22 @@ spec:
           ports:
             - containerPort: 8088
           imagePullPolicy: Always
+          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8088
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 2
+          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8088
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 2
         - name: mysql
           image: mysql:8.0.34
           resources:
@@ -60,6 +76,18 @@ spec:
               mountPath: /docker-entrypoint-initdb.d
             - name: mysql-config
               mountPath: /etc/mysql/conf.d
+          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+          readinessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 20
+            periodSeconds: 20
         - name: redis
           image: redis:latest
           resources:
@@ -71,6 +99,18 @@ spec:
               cpu: "500m"
           ports:
             - containerPort: 6379
+          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 20
+            periodSeconds: 20
       volumes:
         - name: sns-initdb
           configMap:

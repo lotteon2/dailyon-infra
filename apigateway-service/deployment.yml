@@ -39,6 +39,22 @@ spec:
           ports:
             - containerPort: 8000
           imagePullPolicy: Always
+          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 2
+          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 2
       affinity:
         nodeAffinity:
           # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행

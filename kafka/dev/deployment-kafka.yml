@@ -67,6 +67,18 @@ spec:
             value: 'ciWo7IWazngRchmPES6q5A=='
           - name: KAFKA_LOG_DIRS
             value: '/var/lib/kafka/data'
+          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+          livenessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 30
+            periodSeconds: 20
         - name: kafka-connect
           image: confluentinc/cp-kafka-connect
           ports:
@@ -107,6 +119,18 @@ spec:
           volumeMounts:
           - name: connector-jars
             mountPath: /etc/kafka-connect/jars
+          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+          readinessProbe:
+            tcpSocket:
+              port: 8083
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+          livenessProbe:
+            tcpSocket:
+              port: 8083
+            initialDelaySeconds: 30
+            periodSeconds: 20
       volumes:
       - name: connector-jars
         hostPath:
