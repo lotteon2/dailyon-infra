@@ -32,6 +32,6 @@ resource "aws_dynamodb_table" "dynamodb-order" {
 
   tags = {
     Terraform   = "true"
-    Environment = "dev"
+    Environment = "prod"
   }
 }
