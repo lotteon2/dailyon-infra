@@ -55,8 +55,8 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 30
             timeoutSeconds: 2
-        - name: mongo
-          image: mongo:latest
+        - name: mysql
+          image: mysql:8.0.34
           resources:
             requests:
               memory: "256Mi"
@@ -65,50 +65,60 @@ spec:
               memory: "512Mi"
               cpu: "1000m"
           ports:
-            - containerPort: 27017
+            - containerPort: 3306
           env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              value: root
-            - name: MONGO_INITDB_ROOT_PASSWORD
+            - name: MYSQL_ROOT_PASSWORD
               value: "11111111"
-            - name: MONGO_INITDB_DATABASE
+            - name: MYSQL_DATABASE
               value: promotion-service
+          volumeMounts:
+            - name: promotion-initdb
+              mountPath: /docker-entrypoint-initdb.d
+            - name: mysql-config
+              mountPath: /etc/mysql/conf.d
           # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
           readinessProbe:
             tcpSocket:
-              port: 27017
+              port: 3306
             initialDelaySeconds: 20
             periodSeconds: 20
           # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
           livenessProbe:
             tcpSocket:
-              port: 27017
+              port: 3306
             initialDelaySeconds: 20
             periodSeconds: 20
-        - name: dynamodb
-          image: "amazon/dynamodb-local:latest"
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "250m"
-            limits:
-              memory: "256Mi"
-              cpu: "500m"
-          ports:
-            - containerPort: 8000
-          command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
-          readinessProbe:
-            tcpSocket:
-              port: 8000
-            initialDelaySeconds: 20
-            periodSeconds: 20
-          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
-          livenessProbe:
-            tcpSocket:
-              port: 8000
-            initialDelaySeconds: 20
-            periodSeconds: 20
+      volumes:
+        - name: promotion-initdb
+          configMap:
+            name: promotion-initdb-config
+        - name: mysql-config
+          configMap:
+            name: mysql-config
+#        - name: dynamodb
+#          image: "amazon/dynamodb-local:latest"
+#          resources:
+#            requests:
+#              memory: "128Mi"
+#              cpu: "250m"
+#            limits:
+#              memory: "256Mi"
+#              cpu: "500m"
+#          ports:
+#            - containerPort: 8000
+#          command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+#          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+#          readinessProbe:
+#            tcpSocket:
+#              port: 8000
+#            initialDelaySeconds: 20
+#            periodSeconds: 20
+#          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+#          livenessProbe:
+#            tcpSocket:
+#              port: 8000
+#            initialDelaySeconds: 20
+#            periodSeconds: 20
       affinity:
         nodeAffinity:
           # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행

@@ -50,7 +50,7 @@ spec:
             value: 'INTERNAL://localhost:29092,CONTROLLER://localhost:29093,EXTERNAL://0.0.0.0:9092'
           # Client에게 Metadata와 함께 반환할 서버 주소
           - name: KAFKA_ADVERTISED_LISTENERS
-            value: 'INTERNAL://localhost:29092,EXTERNAL://localhost:9092'
+            value: 'INTERNAL://localhost:29092,EXTERNAL://kafka-service:9092'
           - name: KAFKA_INTER_BROKER_LISTENER_NAME
             value: 'INTERNAL'
           - name: KAFKA_CONTROLLER_QUORUM_VOTERS
