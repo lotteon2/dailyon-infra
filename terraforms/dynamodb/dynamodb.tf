@@ -2,7 +2,7 @@ provider "aws" {
   region = "ap-northeast-2"
 }
 
-resource "aws_dynamodb_table" "dynamodb-order" {
+resource "aws_dynamodb_table" "dynamodb_order" {
   name           = "orders"
   billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "id"

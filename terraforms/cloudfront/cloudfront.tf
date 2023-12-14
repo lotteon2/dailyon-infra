@@ -6,7 +6,7 @@ locals {
   s3_origin_id = "DailyOnFrontend"
 }
 
-resource "aws_s3_bucket" "frontend-s3" {
+resource "aws_s3_bucket" "frontend_s3" {
   bucket = "dailyon-frontend"
 
   tags = {
@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "frontend-s3" {
 }
 
 resource "aws_s3_bucket_policy" "s3_policy" {
-  bucket = aws_s3_bucket.frontend-s3.id
+  bucket = aws_s3_bucket.frontend_s3.id
   policy = data.aws_iam_policy_document.s3_policy_document.json
 }
 
@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "s3_policy_document" {
 
   statement {
     actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.frontend-s3.arn}/*"]
+    resources = ["${aws_s3_bucket.frontend_s3.arn}/*"]
     principals {
       type = "Service"
       identifiers = ["cloudfront.amazonaws.com"]
@@ -32,13 +32,13 @@ data "aws_iam_policy_document" "s3_policy_document" {
     condition {
       test = "StringEquals"
       variable = "AWS:SourceArn"
-      values = [aws_cloudfront_distribution.frontend-cloudfront.arn]
+      values = [aws_cloudfront_distribution.frontend_cloudfront.arn]
     }
   }
 }
 
-resource "aws_s3_bucket_cors_configuration" "s3-bucket-cors-config" {
-  bucket = aws_s3_bucket.frontend-s3.id
+resource "aws_s3_bucket_cors_configuration" "s3_bucket_cors_config" {
+  bucket = aws_s3_bucket.frontend_s3.id
 
   cors_rule {
     allowed_headers = ["*"]
@@ -54,7 +54,7 @@ resource "aws_s3_bucket_cors_configuration" "s3-bucket-cors-config" {
 }
 
 resource "aws_s3_bucket_website_configuration" "s3_bucket_website_configuration" {
-  bucket = aws_s3_bucket.frontend-s3.id
+  bucket = aws_s3_bucket.frontend_s3.id
 
   index_document {
     suffix = "index.html"
@@ -65,13 +65,13 @@ resource "aws_s3_bucket_website_configuration" "s3_bucket_website_configuration"
   }
 }
 
-resource "aws_cloudfront_origin_access_identity" "cloudfront-access-identity" {
+resource "aws_cloudfront_origin_access_identity" "cloudfront_access_identity" {
   comment = "This is a cloudfront distribution origin access identity"
 }
 
-resource "aws_cloudfront_distribution" "frontend-cloudfront" {
+resource "aws_cloudfront_distribution" "frontend_cloudfront" {
   origin {
-    domain_name = aws_s3_bucket.frontend-s3.bucket_regional_domain_name
+    domain_name = aws_s3_bucket.frontend_s3.bucket_regional_domain_name
     origin_id   = local.s3_origin_id
     origin_access_control_id = aws_cloudfront_origin_access_control.cloudfront_origin_access_control.id
   }
