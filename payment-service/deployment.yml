@@ -88,17 +88,6 @@ spec:
               port: 3306
             initialDelaySeconds: 20
             periodSeconds: 20
-        - name: redis
-          image: redis:latest
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "250m"
-            limits:
-              memory: "256Mi"
-              cpu: "500m"
-          ports:
-            - containerPort: 6379
       volumes:
         - name: payment-initdb
           configMap:
