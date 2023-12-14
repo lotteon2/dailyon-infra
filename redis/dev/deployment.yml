@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: redis-service
-          image: redis:latest
+          image: redis:7.2-alpine
           resources:
             requests:
               memory: "128Mi"
@@ -50,4 +50,14 @@ spec:
               port: 6379
             initialDelaySeconds: 20
             periodSeconds: 20
+      affinity:
+        nodeAffinity:
+          # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - Redis
 
