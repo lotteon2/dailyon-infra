@@ -48,3 +48,6 @@ terraform.rc
 
 /config-service/.env
 
+*.pem
+
+**/ngrinder-**/**

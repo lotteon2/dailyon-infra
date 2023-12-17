@@ -1,0 +1,87 @@
+version: '3.7'
+services:
+  controller:
+    container_name: ngrinder-controller
+    image: ngrinder/controller:3.5.5-p1
+    platform: linux/amd64
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - "80:80"
+      - "16001:16001"
+      - "12000-12009:12000-12009"
+    volumes:
+      - ./ngrinder-controller:/opt/ngrinder-controller
+  agent-1:
+    depends_on:
+      - controller
+    container_name: ngrinder-agent-1
+    image: ngrinder/agent:3.5.5-p1
+    platform: linux/amd64
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - ./ngrinder-agent-1:/opt/ngrinder-agent
+    command: ["controller:80"]
+  agent-2:
+    depends_on:
+      - controller
+    container_name: ngrinder-agent-2
+    image: ngrinder/agent:3.5.5-p1
+    platform: linux/amd64
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - ./ngrinder-agent-2:/opt/ngrinder-agent
+    command: ["controller:80"]
+  agent-3:
+    depends_on:
+      - controller
+    container_name: ngrinder-agent-3
+    image: ngrinder/agent:3.5.5-p1
+    platform: linux/amd64
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - ./ngrinder-agent-3:/opt/ngrinder-agent
+    command: [ "controller:80" ]
+  agent-4:
+    depends_on:
+      - controller
+    container_name: ngrinder-agent-4
+    image: ngrinder/agent:3.5.5-p1
+    platform: linux/amd64
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - ./ngrinder-agent-4:/opt/ngrinder-agent
+    command: [ "controller:80" ]
+  agent-5:
+    depends_on:
+      - controller
+    container_name: ngrinder-agent-5
+    image: ngrinder/agent:3.5.5-p1
+    platform: linux/amd64
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - ./ngrinder-agent-5:/opt/ngrinder-agent
+    command: [ "controller:80" ]
+  agent-6:
+    depends_on:
+      - controller
+    container_name: ngrinder-agent-6
+    image: ngrinder/agent:3.5.5-p1
+    platform: linux/amd64
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - ./ngrinder-agent-6:/opt/ngrinder-agent
+    command: [ "controller:80" ]
