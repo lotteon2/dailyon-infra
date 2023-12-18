@@ -5,56 +5,57 @@ metadata:
   namespace: dev
 data:
   initdb.sql: |
+    use member-service;
+    
     CREATE TABLE `member` (
-        `id` BIGINT NOT NULL AUTO_INCREMENT,
-        `email` VARCHAR(255) NOT NULL,
-        `nickname` VARCHAR(255) NOT NULL,
-        `profile_img_url` VARCHAR(255) NULL,
-        `gender` VARCHAR(255) DEFAULT NULL,
-        `birth` VARCHAR(255) DEFAULT NULL,
-        `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `code` VARCHAR(255) NOT NULL,
-        `point` BIGINT NOT NULL DEFAULT 0,
-        `is_deleted` BOOLEAN NOT NULL DEFAULT 0,
-        PRIMARY KEY (`id`)
-
-    );
-
+      `id` BIGINT NOT NULL AUTO_INCREMENT,
+      `email` VARCHAR(255) NOT NULL,
+      `nickname` VARCHAR(255) NOT NULL,
+      `profile_img_url` VARCHAR(255) NULL,
+      `gender` VARCHAR(255) DEFAULT NULL,
+      `birth` VARCHAR(255) DEFAULT NULL,
+      `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      `code` VARCHAR(255) NOT NULL,
+      `point` BIGINT NOT NULL DEFAULT 0,
+      `is_deleted` BOOLEAN NOT NULL DEFAULT 0,
+      PRIMARY KEY (`id`)
+    
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    
     CREATE TABLE `address` (
-        `id` BIGINT NOT NULL AUTO_INCREMENT,
-        `member_id` BIGINT NOT NULL ,
-        `is_default` BOOLEAN NOT NULL,
-        `name` VARCHAR(255) NOT NULL,
-        `detail_address` VARCHAR(255) NOT NULL,
-        `road_address` VARCHAR(255) NOT NULL,
-        `post_code` VARCHAR(255) NOT NULL,
-        `phone_number` VARCHAR(255) NOT NULL,
-        `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (`id`)
-        
-    );
-
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `member_id` BIGINT NOT NULL ,
+    `is_default` BOOLEAN NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `detail_address` VARCHAR(255) NOT NULL,
+    `road_address` VARCHAR(255) NOT NULL,
+    `post_code` VARCHAR(255) NOT NULL,
+    `phone_number` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    
     CREATE TABLE `point_history` (
-        `id` BIGINT NOT NULL AUTO_INCREMENT,
-        `member_id` BIGINT NOT NULL,
-        `amount` BIGINT NOT NULL,
-        `status` BOOLEAN NOT NULL,
-        `source` VARCHAR(255) NOT NULL,
-        `utilize` VARCHAR(255) NULL,
-        `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (`id`)
-    );
-
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `member_id` BIGINT NOT NULL,
+    `amount` BIGINT NOT NULL,
+    `status` BOOLEAN NOT NULL,
+    `source` VARCHAR(255) NOT NULL,
+    `utilize` VARCHAR(255) NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    
     ALTER TABLE member
-      ADD CONSTRAINT Unique_email UNIQUE (email);
-
+    ADD CONSTRAINT Unique_email UNIQUE (email);
+    
     ALTER TABLE address
     ADD CONSTRAINT FK_address_member
     FOREIGN KEY (member_id)
     REFERENCES member(id);
-
+    
     ALTER TABLE point_history
     ADD CONSTRAINT FK_point_history_member
     FOREIGN KEY (member_id)
