@@ -6,34 +6,38 @@ metadata:
 data:
   initdb.sql: |
     CREATE TABLE `coupon_info` (
-        `id` BIGINT NOT NULL AUTO_INCREMENT,
-        `name` VARCHAR(255) NOT NULL,
-        `discount_type` VARCHAR(255) NOT NULL,
-        `discount_value` BIGINT NOT NULL,
-        `start_at` DATETIME(6) NOT NULL,
-        `end_at` DATETIME(6) NOT NULL,
-        `issued_quantity` INT NOT NULL,
-        `remaining_quantity` INT NOT NULL,
-        `requires_concurrency_control` TINYINT(1) NOT NULL DEFAULT 0,
-        `target_img_url` VARCHAR(255),
-        `min_purchase_amount` BIGINT NOT NULL DEFAULT 0,
-        `max_discount_amount` BIGINT,
-        PRIMARY KEY (`id`)
+      `id` BIGINT NOT NULL AUTO_INCREMENT,
+      `name` VARCHAR(255) NOT NULL,
+      `discount_type` VARCHAR(255) NOT NULL,
+      `discount_value` BIGINT NOT NULL,
+      `start_at` DATETIME(6) NOT NULL,
+      `end_at` DATETIME(6) NOT NULL,
+      `issued_quantity` INT NOT NULL,
+      `remaining_quantity` INT NOT NULL,
+      `requires_concurrency_control` TINYINT(1) NOT NULL DEFAULT 0,
+      `target_img_url` VARCHAR(255),
+      `min_purchase_amount` BIGINT NOT NULL DEFAULT 0,
+      `max_discount_amount` BIGINT,
+      `created_at` datetime DEFAULT NOW() NOT NULL,
+      `updated_at` datetime DEFAULT NOW() NOT NULL,
+      PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
+    
     CREATE TABLE `coupon_applies_to` (
-        `coupon_info_id` BIGINT NOT NULL,
-        `applies_to_id` BIGINT NOT NULL,
-        `applies_to_type` VARCHAR(255) NOT NULL,
-        PRIMARY KEY (`coupon_info_id`),
-        CONSTRAINT `fk_coupon_applies_to_info` FOREIGN KEY (`coupon_info_id`) REFERENCES `coupon_info` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    `coupon_info_id` BIGINT NOT NULL,
+    `applies_to_id` BIGINT NOT NULL,
+    `applies_to_type` VARCHAR(255) NOT NULL,
+    `applies_to_name` VARCHAR(255),
+    PRIMARY KEY (`coupon_info_id`),
+    CONSTRAINT `fk_coupon_applies_to_info` FOREIGN KEY (`coupon_info_id`) REFERENCES `coupon_info` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
+    
     CREATE TABLE `member_coupon` (
-        `member_id` BIGINT NOT NULL,
-        `coupon_info_id` BIGINT NOT NULL,
-        `created_at` DATETIME(6) NOT NULL,
-        `is_used` TINYINT(1) NOT NULL,
-        PRIMARY KEY (`member_id`, `coupon_info_id`),
-        CONSTRAINT `fk_member_coupon_info` FOREIGN KEY (`coupon_info_id`) REFERENCES `coupon_info` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+    `member_id` BIGINT NOT NULL,
+    `coupon_info_id` BIGINT NOT NULL,
+    `created_at` datetime DEFAULT NOW() NOT NULL,
+    `updated_at` datetime DEFAULT NOW() NOT NULL,
+    `is_used` TINYINT(1) NOT NULL,
+    PRIMARY KEY (`member_id`, `coupon_info_id`),
+    CONSTRAINT `fk_member_coupon_info` FOREIGN KEY (`coupon_info_id`) REFERENCES `coupon_info` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
