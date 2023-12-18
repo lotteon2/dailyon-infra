@@ -14,6 +14,20 @@ sh ./start-local.sh
 sh ./stop-local.sh
 ```
 
+## 운영(EKS) 환경
+
+### AWS EKS 환경으로 내 컴퓨터 환경 변경
+
+```shell
+aws eks update-kubeconfig --region ap-northeast-2 --name dailyon
+```
+
+### Docker Desktop으로 내 컴퓨터 환경 변경
+
+```shell
+kubectl config use-context docker-desktop
+```
+
 ## Kafka 가이드
 
 
