@@ -14,7 +14,7 @@ kubectl create -f ./kafka/dev/deployment.yml
 kubectl create -f ./kafka/dev/service.yml
 
 kubectl create -f ./redis/dev/configmap.yml
-kubectl create -f ./redis/dev/statefulset.yml
+kubectl create -f ./redis/dev/deployment.yml
 kubectl create -f ./redis/dev/service.yml
 
 kubectl create -f ./rabbitmq/dev/deployment.yml
@@ -23,9 +23,44 @@ kubectl create -f ./rabbitmq/dev/service.yml
 kubectl create -f ./discovery-service/deployment.yml
 kubectl create -f ./discovery-service/service.yml
 
-kubectl create configmap dailyon-config --from-env-file=./config-service/.env -n dev
-kubectl create -f ./config-service/deployment.yml
-kubectl create -f ./config-service/service.yml
+discovery_service_pod_names=$(kubectl get pods -l app="discovery-service" -n "dev" --output=jsonpath='{.items[*].metadata.name}')
+for pod_name in $discovery_service_pod_names; do
+  attempt=0
+  while [[ $attempt -lt 3 ]]; do
+    readiness_probe_status=$(kubectl get pod "${pod_name}" -n "dev" --template='{{range .status.conditions}}{{if eq .type "Ready"}}{{.status}}{{end}}{{end}}')
+
+    if [[ "${readiness_probe_status}" == "True" ]]; then
+      echo "Readiness probe is healthy for pod ${pod_name} in namespace dev."
+
+      kubectl create configmap dailyon-config --from-env-file=./config-service/.env -n dev
+      kubectl create -f ./config-service/deployment.yml
+      kubectl create -f ./config-service/service.yml
+
+      break
+    else
+      echo "Readiness probe is not healthy for pod ${pod_name} in namespace dev. Sleeping for 60 seconds..."
+      sleep 60
+      ((attempt++))
+    fi
+  done
+done
+
+config_service_pod_names=$(kubectl get pods -l app="config-service" -n "dev" --output=jsonpath='{.items[*].metadata.name}')
+for pod_name in $config_service_pod_names; do
+  attempt=0
+  while [[ $attempt -lt 3 ]]; do
+    readiness_probe_status=$(kubectl get pod "${pod_name}" -n "dev" --template='{{range .status.conditions}}{{if eq .type "Ready"}}{{.status}}{{end}}{{end}}')
+
+    if [[ "${readiness_probe_status}" == "True" ]]; then
+      echo "Readiness probe is healthy for pod ${pod_name} in namespace dev."
+      break
+    else
+      echo "Readiness probe is not healthy for pod ${pod_name} in namespace dev. Sleeping for 60 seconds..."
+      sleep 60
+      ((attempt++))
+    fi
+  done
+done
 
 kubectl create -f ./apigateway-service/deployment.yml
 kubectl create -f ./apigateway-service/service.yml
@@ -38,13 +73,13 @@ kubectl create -f ./member-service/initdb-config.yml
 kubectl create -f ./member-service/deployment.yml
 kubectl create -f ./member-service/service.yml
 
-kubectl create -f ./order-service/initdb-config.yml
-kubectl create -f ./order-service/deployment.yml
-kubectl create -f ./order-service/service.yml
-
 kubectl create -f ./payment-service/initdb-config.yml
 kubectl create -f ./payment-service/deployment.yml
 kubectl create -f ./payment-service/service.yml
+
+kubectl create -f ./order-service/initdb-config.yml
+kubectl create -f ./order-service/deployment.yml
+kubectl create -f ./order-service/service.yml
 
 kubectl create -f ./product-service/initdb-config.yml
 kubectl create -f ./product-service/deployment.yml
