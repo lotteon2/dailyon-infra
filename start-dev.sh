@@ -13,7 +13,7 @@ kubectl create -f ./kube-config/dev/mysql-config.yml
 kubectl create -f ./kafka/dev/deployment.yml
 kubectl create -f ./kafka/dev/service.yml
 
-kubectl create -f ./redis/dev/configmap.yml
+kubectl apply -f ./redis/dev/configmap.yml
 kubectl create -f ./redis/dev/deployment.yml
 kubectl create -f ./redis/dev/service.yml
 
@@ -32,7 +32,7 @@ for pod_name in $discovery_service_pod_names; do
     if [[ "${readiness_probe_status}" == "True" ]]; then
       echo "Readiness probe is healthy for pod ${pod_name} in namespace dev."
 
-      kubectl create configmap dailyon-config --from-env-file=./config-service/.env -n dev
+      kubectl apply configmap dailyon-config --from-env-file=./config-service/.env -n dev
       kubectl create -f ./config-service/deployment.yml
       kubectl create -f ./config-service/service.yml
 
@@ -65,46 +65,46 @@ done
 kubectl create -f ./apigateway-service/deployment.yml
 kubectl create -f ./apigateway-service/service.yml
 
-kubectl create -f ./auth-service/initdb-config.yml
+kubectl apply -f ./auth-service/initdb-config.yml
 kubectl create -f ./auth-service/deployment.yml
 kubectl create -f ./auth-service/service.yml
 
-kubectl create -f ./member-service/initdb-config.yml
+kubectl apply -f ./member-service/initdb-config.yml
 kubectl create -f ./member-service/deployment.yml
 kubectl create -f ./member-service/service.yml
 
-kubectl create -f ./payment-service/initdb-config.yml
+kubectl apply -f ./payment-service/initdb-config.yml
 kubectl create -f ./payment-service/deployment.yml
 kubectl create -f ./payment-service/service.yml
 
-kubectl create -f ./order-service/initdb-config.yml
+kubectl apply -f ./order-service/initdb-config.yml
 kubectl create -f ./order-service/deployment.yml
 kubectl create -f ./order-service/service.yml
 
-kubectl create -f ./product-service/initdb-config.yml
+kubectl apply -f ./product-service/initdb-config.yml
 kubectl create -f ./product-service/deployment.yml
 kubectl create -f ./product-service/service.yml
 
-kubectl create -f ./promotion-service/initdb-config.yml
+kubectl apply -f ./promotion-service/initdb-config.yml
 kubectl create -f ./promotion-service/deployment.yml
 kubectl create -f ./promotion-service/service.yml
 
-kubectl create -f ./sns-service/initdb-config.yml
+kubectl apply -f ./sns-service/initdb-config.yml
 kubectl create -f ./sns-service/deployment.yml
 kubectl create -f ./sns-service/service.yml
 
-kubectl create -f ./review-service/initdb-config.yml
+kubectl apply -f ./review-service/initdb-config.yml
 kubectl create -f ./review-service/deployment.yml
 kubectl create -f ./review-service/service.yml
 
-kubectl create -f ./notification-service/initdb-config.yml
+kubectl apply -f ./notification-service/initdb-config.yml
 kubectl create -f ./notification-service/deployment.yml
 kubectl create -f ./notification-service/service.yml
 
-kubectl create -f ./wish-cart-service/initdb-config.yml
+kubectl apply -f ./wish-cart-service/initdb-config.yml
 kubectl create -f ./wish-cart-service/deployment.yml
 kubectl create -f ./wish-cart-service/service.yml
 
-kubectl create -f ./auction-service/initdb-config.yml
+kubectl apply -f ./auction-service/initdb-config.yml
 kubectl create -f ./auction-service/deployment.yml
 kubectl create -f ./auction-service/service.yml
