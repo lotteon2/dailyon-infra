@@ -5,4 +5,23 @@ metadata:
   namespace: dev
 data:
   initdb.sql: |
+    use review-service;
     
+    CREATE TABLE `review` (
+      `id` bigint NOT NULL AUTO_INCREMENT,
+      `created_at` datetime(6) DEFAULT NULL,
+      `updated_at` datetime(6) DEFAULT NULL,
+      `description` varchar(255) NOT NULL,
+      `img_url` varchar(255) DEFAULT NULL,
+      `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+      `member_id` bigint NOT NULL,
+      `nickname` varchar(255) NOT NULL,
+      `order_detail_no` varchar(255) NOT NULL,
+      `product_id` bigint NOT NULL,
+      `profile_img_url` varchar(255) NOT NULL,
+      `rating` float NOT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `idx_order_detail_no` (`order_detail_no`),
+      KEY `idx_member_id` (`member_id`),
+      KEY `idx_product_id` (`product_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
