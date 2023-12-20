@@ -13,10 +13,13 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
+    volumes:
+      - ./data:/usr/share/elasticsearch/data
     networks:
       - elastic-search-net
-
   kibana:
+    depends_on:
+      - elastic-search
     container_name: kibana
     image: docker.elastic.co/kibana/kibana:7.15.2
     environment:
@@ -24,8 +27,6 @@ services:
       ELASTICSEARCH_HOSTS: http://elastic-search:9200
     ports:
       - 5601:5601
-    depends_on:
-      - elastic-search
     networks:
       - elastic-search-net
 

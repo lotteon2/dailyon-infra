@@ -18,6 +18,7 @@ variable "ecr_repos" {
     "dailyon-config-service",
     "dailyon-auth-service",
     "dailyon-auction-service",
+    "dailyon-search-service",
     "dailyon-apigateway-service"
   ]
 }
