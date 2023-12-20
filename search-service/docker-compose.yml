@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  elastic-search:
+    build:
+      context: .
+      args:
+        ELK_VERSION: 7.15.2
+    container_name: elastic-search
+    environment:
+      - node.name=single-node
+      - cluster.name=dailyon
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic-search-net
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.15.2
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS: http://elastic-search:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - elastic-search
+    networks:
+      - elastic-search-net
+
+networks:
+  elastic-search-net:
