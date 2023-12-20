@@ -15,6 +15,7 @@ kubectl create -f ./kafka/dev/service.yml
 
 kubectl apply -f ./redis/dev/configmap.yml
 kubectl create -f ./redis/dev/deployment.yml
+#kubectl create -f ./redis/dev/statefulset.yml
 kubectl create -f ./redis/dev/service.yml
 
 kubectl create -f ./rabbitmq/dev/deployment.yml
@@ -32,7 +33,7 @@ for pod_name in $discovery_service_pod_names; do
     if [[ "${readiness_probe_status}" == "True" ]]; then
       echo "Readiness probe is healthy for pod ${pod_name} in namespace dev."
 
-      kubectl apply configmap dailyon-config --from-env-file=./config-service/.env -n dev
+      kubectl create configmap dailyon-config --from-env-file=./config-service/.env -n dev
       kubectl create -f ./config-service/deployment.yml
       kubectl create -f ./config-service/service.yml
 
