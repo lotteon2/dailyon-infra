@@ -3,11 +3,11 @@ provider "aws" {
 }
 
 locals {
-  s3_origin_id = "DailyOnFrontend"
+  s3_origin_id = "DailyOnAdminFrontend"
 }
 
 resource "aws_s3_bucket" "frontend_s3" {
-  bucket = "dailyon-frontend"
+  bucket = "dailyon-admin-frontend"
 
   tags = {
     Terraform   = "true"
@@ -78,7 +78,7 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "DailyOn frontend CDN"
+  comment             = "DailyOn admin frontend CDN"
   default_root_object = "index.html"
 
   default_cache_behavior {
@@ -107,8 +107,11 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront" {
     }
   }
 
+  aliases = [var.external_dns]
+
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = var.external_cert_arn
+    ssl_support_method  = "sni-only"
   }
 
   tags = {
@@ -117,8 +120,21 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront" {
   }
 }
 
+
+resource "aws_route53_record" "cloudfront_domain" {
+  name    = var.external_dns
+  type    = "A"
+  zone_id = var.route53_zone_id
+
+  alias {
+    name                   = aws_cloudfront_distribution.frontend_cloudfront.domain_name
+    zone_id                = aws_cloudfront_distribution.frontend_cloudfront.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
 resource "aws_cloudfront_origin_access_control" "cloudfront_origin_access_control" {
-  name                              = "DailyonOriginAccessControl"
+  name                              = "DailyonAdminOriginAccessControl"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
