@@ -108,4 +108,3 @@ services:
 
 networks:
   dailyon-network:
-    name: dailyon-network
