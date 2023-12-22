@@ -150,18 +150,18 @@ module "eks" {
   # 관리형 노드 그룹 정의
   eks_managed_node_groups = {
 
-#    app1 = {
-#      desired_size = 1
-#      max_size     = 2
-#      min_size     = 1
-#
-#      instance_types = ["t3.large"]
-#
-#      labels = {
-#        type = "App"
-#        size = "Large"
-#      }
-#    }
+    app1 = {
+      desired_size = 1
+      max_size     = 2
+      min_size     = 1
+
+      instance_types = ["t3.large"]
+
+      labels = {
+        type = "App"
+        size = "Large"
+      }
+    }
 
     app2 = {
       desired_size = 1
@@ -191,29 +191,29 @@ module "eks" {
       }
     }
 
-#    kafka = {
-#      desired_size = 1
-#      max_size     = 2
-#      min_size     = 1
-#
-#      instance_types = ["t3.large"]
-#
-#      labels = {
-#        type = "Kafka"
-#      }
-#    }
-#
-#    redis = {
-#      desired_size = 1
-#      max_size     = 2
-#      min_size     = 1
-#
-#      instance_types = ["t3.large"]
-#
-#      labels = {
-#        type = "Redis"
-#      }
-#    }
+    kafka = {
+      desired_size = 1
+      max_size     = 2
+      min_size     = 1
+
+      instance_types = ["t3.medium"]
+
+      labels = {
+        type = "Kafka"
+      }
+    }
+
+    redis = {
+      desired_size = 1
+      max_size     = 2
+      min_size     = 1
+
+      instance_types = ["t3.medium"]
+
+      labels = {
+        type = "Redis"
+      }
+    }
   }
 }
 
