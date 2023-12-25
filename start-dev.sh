@@ -13,9 +13,7 @@ kubectl create -f ./kube-config/dev/mysql-config.yml
 kubectl create -f ./kafka/dev/deployment.yml
 kubectl create -f ./kafka/dev/service.yml
 
-kubectl apply -f ./redis/dev/configmap.yml
 kubectl create -f ./redis/dev/deployment.yml
-#kubectl create -f ./redis/dev/statefulset.yml
 kubectl create -f ./redis/dev/service.yml
 
 kubectl create -f ./rabbitmq/dev/deployment.yml

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: redis-cluster
-  namespace: dev
+  namespace: prod
   labels:
     app: redis-cluster
 spec:
@@ -12,7 +12,7 @@ spec:
     # Match mapping pod's label
     matchLabels:
       app: redis-cluster
-  replicas: 4
+  replicas: 6
   # Pod Spec
   template:
     metadata:
@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: redis:7.2-alpine
+          image: redis:5.0.1-alpine
           resources:
             requests:
               memory: "128Mi"
@@ -49,6 +49,9 @@ spec:
             - name: conf
               mountPath: /conf
               readOnly: false
+            - name: data
+              mountPath: /data
+              readOnly: false
           # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
           readinessProbe:
             tcpSocket:
@@ -61,10 +64,11 @@ spec:
               port: 6379
             initialDelaySeconds: 20
             periodSeconds: 20
+      terminationGracePeriodSeconds: 60
       volumes:
         - name: conf
           configMap:
-            name: redis-cluster
+            name: redis-cluster-config
             defaultMode: 0755
       affinity:
         nodeAffinity:
@@ -76,3 +80,14 @@ spec:
                     operator: In
                     values:
                       - Redis
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app: redis-cluster
+        namespace: prod
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 5Gi
