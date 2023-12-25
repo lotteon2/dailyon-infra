@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+  namespace: prod
+  labels:
+    app: rabbitmq-service
+spec:
+  # Deployment Spec
+  selector:
+    # Match mapping pod's label
+    matchLabels:
+      app: rabbitmq-service
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  replicas: 1
+  # Pod Spec
+  template:
+    metadata:
+      name: rabbitmq-pod
+      # Set pod's label
+      labels:
+        app: rabbitmq-service
+    spec:
+      containers:
+        - name: rabbitmq-service
+          image: rabbitmq:management
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 15672
+            - containerPort: 5672
+            - containerPort: 15671
+            - containerPort: 5671
+            - containerPort: 4369
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: guest
+            - name: RABBITMQ_DEFAULT_PASS
+              value: guest
+          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+          readinessProbe:
+            tcpSocket:
+              port: 5672
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+          livenessProbe:
+            tcpSocket:
+              port: 5672
+            initialDelaySeconds: 20
+            periodSeconds: 20
+      terminationGracePeriodSeconds: 60
+      affinity:
+        nodeAffinity:
+          # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: type
+                  operator: In
+                  values:
+                    - Util
+                - key: size
+                  operator: In
+                  values:
+                    - Small
+                    - Medium
