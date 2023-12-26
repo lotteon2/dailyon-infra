@@ -79,62 +79,6 @@ spec:
               port: 9092
             initialDelaySeconds: 30
             periodSeconds: 20
-        - name: kafka-connect
-          image: confluentinc/cp-kafka-connect
-          ports:
-          - containerPort: 8083
-          env:
-          - name: CONNECT_BOOTSTRAP_SERVERS
-            value: "localhost:29092"
-          - name: CONNECT_REST_PORT
-            value: "8083"
-          - name: CONNECT_GROUP_ID
-            value: "sns-service"
-          - name: CONNECT_CONFIG_STORAGE_TOPIC
-            value: "sns-service-config"
-          - name: CONNECT_OFFSET_STORAGE_TOPIC
-            value: "sns-service-offsets"
-          - name: CONNECT_STATUS_STORAGE_TOPIC
-            value: "sns-service-status"
-          - name: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
-            value: "1"
-          - name: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
-            value: "1"
-          - name: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
-            value: "1"
-          - name: CONNECT_KEY_CONVERTER
-            value: "org.apache.kafka.connect.json.JsonConverter"
-          - name: CONNECT_VALUE_CONVERTER
-            value: "org.apache.kafka.connect.json.JsonConverter"
-          - name: CONNECT_INTERNAL_KEY_CONVERTER
-            value: "org.apache.kafka.connect.json.JsonConverter"
-          - name: CONNECT_INTERNAL_VALUE_CONVERTER
-            value: "org.apache.kafka.connect.json.JsonConverter"
-          - name: CONNECT_REST_ADVERTISED_HOST_NAME
-            value: "localhost"
-          - name: CONNECT_LOG4J_ROOT_LOGLEVEL
-            value: "DEBUG"
-          - name: CONNECT_PLUGIN_PATH
-            value: "/usr/share/java,/etc/kafka-connect/jars"
-          volumeMounts:
-          - name: connector-jars
-            mountPath: /etc/kafka-connect/jars
-          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
-          readinessProbe:
-            tcpSocket:
-              port: 8083
-            initialDelaySeconds: 30
-            periodSeconds: 20
-          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
-          livenessProbe:
-            tcpSocket:
-              port: 8083
-            initialDelaySeconds: 30
-            periodSeconds: 20
-      volumes:
-      - name: connector-jars
-        hostPath:
-          path: /jars
       affinity:
         nodeAffinity:
           # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행

@@ -3,6 +3,8 @@ kubectl create -f ./kube-config/prod/mysql-config.yml
 
 kubectl create -f ./kafka/prod/deployment.yml
 kubectl create -f ./kafka/prod/service.yml
+#kubectl create -f ./kafka/prod/connect-deployment.yml
+#kubectl create -f ./kafka/prod/connect-service.yml
 
 kubectl create -f ./redis/prod/pv.yml
 kubectl create -f ./redis/prod/configmap.yml
