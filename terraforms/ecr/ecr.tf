@@ -32,7 +32,7 @@ resource "aws_ecr_repository" "ecr_repositories" {
     scan_on_push = false
   }
 
-  image_tag_mutability = "IMMUTABLE"
+  image_tag_mutability = "MUTABLE"
 }
 
 resource "aws_ecr_lifecycle_policy" "my_ecr_repo_lifecycle_policy" {
