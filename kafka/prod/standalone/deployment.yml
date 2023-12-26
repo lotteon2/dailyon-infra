@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-deployment
+  namespace: prod
+  labels:
+    app: kafka-service
+spec:
+  # Deployment Spec
+  selector:
+    # Match mapping pod's label
+    matchLabels:
+      app: kafka-service
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  replicas: 1
+  # Pod Spec
+  template:
+    metadata:
+      name: kafka-pod
+      # Set pod's label
+      labels:
+        app: kafka-service
+    spec:
+      containers:
+        - name: kafka1
+          image: confluentinc/cp-kafka
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "1000m"
+            limits:
+              memory: "768Mi"
+              cpu: "1500m"
+          ports:
+          - containerPort: 9092
+          env:
+          - name: KAFKA_NODE_ID
+            value: "1"
+          - name: KAFKA_CONTROLLER_LISTENER_NAMES
+            value: 'CONTROLLER'
+          - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+            value: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
+          # Kafka가 서비스를 제공하는 주소
+          - name: KAFKA_LISTENERS
+            value: 'INTERNAL://localhost:29092,CONTROLLER://localhost:29093,EXTERNAL://0.0.0.0:9092'
+          # Client에게 Metadata와 함께 반환할 서버 주소
+          - name: KAFKA_ADVERTISED_LISTENERS
+            value: 'INTERNAL://localhost:29092,EXTERNAL://kafka-service:9092'
+          - name: KAFKA_INTER_BROKER_LISTENER_NAME
+            value: 'INTERNAL'
+          - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+            value: '1@localhost:29093'
+          - name: KAFKA_PROCESS_ROLES
+            value: 'broker,controller'
+          - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
+            value: "0"
+          - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+            value: "1"
+          - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+            value: "1"
+          - name: CLUSTER_ID
+            value: 'ciWo7IWazngRchmPES6q5A=='
+          - name: KAFKA_LOG_DIRS
+            value: '/var/lib/kafka/data'
+          volumeMounts:
+            - name: kafka-standalone-pv
+              mountPath: /var/lib/kafka/data
+              subPath: kafka
+              readOnly: false
+          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+          livenessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: kafka-standalone-pv
+          persistentVolumeClaim:
+            claimName: kafka-standalone-pvc
+      affinity:
+        nodeAffinity:
+          # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - Kafka

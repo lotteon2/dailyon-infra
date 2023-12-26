@@ -110,6 +110,10 @@ module "eks" {
         }
       })
     }
+    aws-ebs-csi-driver = {
+      most_recent              = true
+      service_account_role_arn = module.ebs_csi_irsa_role.iam_role_arn
+    }
   }
 
   vpc_id     = local.vpc_id
@@ -388,5 +392,17 @@ resource "helm_release" "external_dns" {
   set {
     name  = "policy"
     value = "sync"
+  }
+}
+
+module "ebs_csi_irsa_role" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  role_name             = "AmazonEKS_EBS_CSI_DriverRole"
+  attach_ebs_csi_policy = true
+  oidc_providers = {
+    ex = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
   }
 }

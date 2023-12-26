@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cluster
+  namespace: prod
+  labels:
+    app: redis-cluster
+spec:
+  # Deployment Spec
+  selector:
+    # Match mapping pod's label
+    matchLabels:
+      app: redis-cluster
+  replicas: 1
+  # Pod Spec
+  template:
+    metadata:
+      name: redis-pod
+      # Set pod's label
+      labels:
+        app: redis-cluster
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.2-alpine
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 6379
+              name: client
+            - containerPort: 16379
+              name: gossip
+          volumeMounts:
+            - name: redis-standalone-pv
+              mountPath: /data
+              readOnly: false
+      volumes:
+        - name: redis-standalone-pv
+          persistentVolumeClaim:
+            claimName: redis-standalone-pvc
