@@ -13,4 +13,3 @@ services:
       dailyon-network:
 networks:
   dailyon-network:
-    name: dailyon-network
