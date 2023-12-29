@@ -165,6 +165,10 @@ module "eks" {
         type = "App"
         size = "Large"
       }
+
+      additional_tags = {
+        Name = "DailyonApp1"
+      }
     }
 
     app2 = {
@@ -177,6 +181,46 @@ module "eks" {
       labels = {
         type = "App"
         size = "Medium"
+      }
+
+      additional_tags = {
+        Name = "DailyonApp2"
+      }
+    }
+
+    db1 = {
+      desired_size = 1
+      max_size     = 2
+      min_size     = 1
+
+      instance_types = ["t3.xlarge"]
+
+      labels = {
+        type = "Database"
+        size = "XLarge"
+      }
+
+      additional_tags = {
+        Name = "DailyonDB1"
+      }
+
+      subnet_ids = []
+    }
+
+    db2 = {
+      desired_size = 1
+      max_size     = 2
+      min_size     = 1
+
+      instance_types = ["t3.xlarge"]
+
+      labels = {
+        type = "Database"
+        size = "XLarge"
+      }
+
+      additional_tags = {
+        Name = "DailyonDB2"
       }
     }
 
@@ -193,6 +237,10 @@ module "eks" {
         type = "Util"
         size = "Small"
       }
+
+      additional_tags = {
+        Name = "DailyonUtil"
+      }
     }
 
     kafka = {
@@ -205,6 +253,10 @@ module "eks" {
       labels = {
         type = "Kafka"
       }
+
+      additional_tags = {
+        Name = "DailyonKafka"
+      }
     }
 
     redis = {
@@ -216,6 +268,10 @@ module "eks" {
 
       labels = {
         type = "Redis"
+      }
+
+      additional_tags = {
+        Name = "DailyonRedis"
       }
     }
   }
