@@ -33,11 +33,11 @@ spec:
           image: akak640/dailyon-discovery-service
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "250m"
-            limits:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "125m"
+            limits:
+              memory: "384Mi"
+              cpu: "250m"
           ports:
             - containerPort: 8761
           imagePullPolicy: Always
@@ -46,7 +46,7 @@ spec:
             httpGet:
               path: /actuator/health/readiness
               port: 8761
-            initialDelaySeconds: 30
+            initialDelaySeconds: 120
             periodSeconds: 30
             timeoutSeconds: 2
           # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
@@ -54,7 +54,7 @@ spec:
             httpGet:
               path: /actuator/health/liveness
               port: 8761
-            initialDelaySeconds: 30
+            initialDelaySeconds: 120
             periodSeconds: 30
             timeoutSeconds: 2
       affinity:
