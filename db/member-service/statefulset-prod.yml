@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: member-db-statefulset
+  namespace: prod
+  labels:
+    app: member-db-service
+spec:
+  serviceName: member-db-service
+  selector:
+    matchLabels:
+      app: member-db-service
+  replicas: 1
+  template:
+    metadata:
+      name: member-db-pod
+      labels:
+        app: member-db-service
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0.34
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "11111111"
+            - name: MYSQL_DATABASE
+              value: member-service
+            - name: LC_ALL
+              value: C.UTF-8
+          volumeMounts:
+            - name: mysql-config
+              mountPath: /etc/mysql/conf.d
+            - name: member-ebs-pv
+              mountPath: /var/lib/mysql
+          imagePullPolicy: IfNotPresent
+          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+          readinessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 20
+            periodSeconds: 20
+      volumes:
+        - name: mysql-config
+          configMap:
+            name: mysql-config
+        - name: member-ebs-pv
+          persistentVolumeClaim:
+            claimName: member-ebs-pvc
+      # SIGTERM을 받아도 바로 종료되지 않고 180초 뒤에 종료
+      terminationGracePeriodSeconds: 120
+      restartPolicy: Always
+      affinity:
+        nodeAffinity:
+          # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - Database
+                  - key: size
+                    operator: In
+                    values:
+                      - XLarge

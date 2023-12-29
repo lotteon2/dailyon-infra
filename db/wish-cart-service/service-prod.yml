@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wish-cart-db-service
+  namespace: prod
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 27017
+      port: 27017
+  selector:
+    app: wish-cart-db-service

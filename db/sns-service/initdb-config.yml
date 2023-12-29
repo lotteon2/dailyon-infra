@@ -1,0 +1,274 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sns-initdb-config
+  namespace: dev
+data:
+  initdb.sql: |
+    use sns-db-service;
+    CREATE TABLE member
+    (
+        id              BIGINT   NOT NULL,
+        nickname           VARCHAR(255)            NOT NULL,
+        profile_img_url VARCHAR(255)     DEFAULT '/member/default-profile-img.png'       NOT NULL,
+        code          VARCHAR(255)            NOT NULL,
+        following_count           INT   DEFAULT 0         NOT NULL,
+        follower_count      INT DEFAULT 0 NOT NULL,
+        CONSTRAINT pk_member PRIMARY KEY (id)
+    );
+
+    CREATE TABLE follow
+    (
+        follower_id  BIGINT                 NOT NULL,
+        created_at   datetime DEFAULT NOW() NOT NULL,
+        updated_at   datetime DEFAULT NOW() NOT NULL,
+        following_id BIGINT                 NOT NULL,
+        CONSTRAINT pk_follow PRIMARY KEY (follower_id, following_id)
+    );
+
+    ALTER TABLE follow
+        ADD CONSTRAINT FK_FOLLOW_ON_FOLLOWER FOREIGN KEY (follower_id) REFERENCES member (id);
+
+    ALTER TABLE follow
+        ADD CONSTRAINT FK_FOLLOW_ON_FOLLOWING FOREIGN KEY (following_id) REFERENCES member (id);
+
+    CREATE TABLE post
+    (
+        id            BIGINT AUTO_INCREMENT  NOT NULL,
+        created_at    datetime DEFAULT NOW() NOT NULL,
+        updated_at    datetime DEFAULT NOW() NOT NULL,
+        member_id     BIGINT                 NULL,
+        title         VARCHAR(255)           NOT NULL,
+        `description` VARCHAR(300)           NULL,
+        stature       DOUBLE                 NULL,
+        weight        DOUBLE                 NULL,
+        view_count    INT      DEFAULT 0     NOT NULL,
+        like_count    INT      DEFAULT 0     NOT NULL,
+        comment_count INT      DEFAULT 0     NOT NULL,
+        is_deleted    BIT(1)   DEFAULT 0     NOT NULL,
+        CONSTRAINT pk_post PRIMARY KEY (id)
+    );
+
+    ALTER TABLE post
+        ADD CONSTRAINT FK_POST_ON_MEMBER FOREIGN KEY (member_id) REFERENCES member (id);
+    
+    CREATE TABLE hash_tag
+    (
+        id         BIGINT AUTO_INCREMENT  NOT NULL,
+        created_at datetime DEFAULT NOW() NOT NULL,
+        updated_at datetime DEFAULT NOW() NOT NULL,
+        post_id    BIGINT                 NULL,
+        name       VARCHAR(255)           NULL,
+        CONSTRAINT pk_hashtag PRIMARY KEY (id)
+    );
+
+    ALTER TABLE hash_tag
+        ADD CONSTRAINT uc_6a36557888d6c8c933b1d5701 UNIQUE (post_id, name);
+
+    ALTER TABLE hash_tag
+        ADD CONSTRAINT FK_HASHTAG_ON_POST FOREIGN KEY (post_id) REFERENCES post (id);
+
+    CREATE TABLE post_image
+    (
+        id                BIGINT AUTO_INCREMENT  NOT NULL,
+        created_at        datetime DEFAULT NOW() NOT NULL,
+        updated_at        datetime DEFAULT NOW() NOT NULL,
+        post_id           BIGINT                 NULL,
+        thumbnail_img_url VARCHAR(255)           NOT NULL,
+        img_url           VARCHAR(255)           NOT NULL,
+        CONSTRAINT pk_postimage PRIMARY KEY (id)
+    );
+
+    ALTER TABLE post_image
+        ADD CONSTRAINT FK_POSTIMAGE_ON_POST FOREIGN KEY (post_id) REFERENCES post (id);
+    
+    CREATE TABLE post_image_product_detail
+    (
+        id               BIGINT AUTO_INCREMENT  NOT NULL,
+        created_at       datetime DEFAULT NOW() NOT NULL,
+        updated_at       datetime DEFAULT NOW() NOT NULL,
+        post_image_id    BIGINT                 NULL,
+        product_id       BIGINT                 NOT NULL,
+        product_size     VARCHAR(255)           NOT NULL,
+        left_gap_percent DOUBLE                 NOT NULL,
+        top_gap_percent  DOUBLE                 NOT NULL,
+        CONSTRAINT pk_postimageproductdetail PRIMARY KEY (id)
+    );
+
+    ALTER TABLE post_image_product_detail
+        ADD CONSTRAINT FK_POSTIMAGEPRODUCTDETAIL_ON_POST_IMAGE FOREIGN KEY (post_image_id) REFERENCES post_image (id);
+    
+
+    CREATE TABLE comment
+    (
+        id            BIGINT AUTO_INCREMENT  NOT NULL,
+        created_at    datetime DEFAULT NOW() NOT NULL,
+        updated_at    datetime DEFAULT NOW() NOT NULL,
+        parent_id     BIGINT                 NULL,
+        member_id     BIGINT                 NOT NULL,
+        post_id       BIGINT                 NOT NULL,
+        `description` VARCHAR(140)           NOT NULL,
+        is_deleted    BIT(1)   DEFAULT 0     NOT NULL,
+        CONSTRAINT pk_comment PRIMARY KEY (id)
+    );
+
+    ALTER TABLE comment
+        ADD CONSTRAINT FK_COMMENT_ON_MEMBER FOREIGN KEY (member_id) REFERENCES member (id);
+
+    ALTER TABLE comment
+        ADD CONSTRAINT FK_COMMENT_ON_PARENT FOREIGN KEY (parent_id) REFERENCES comment (id);
+
+    ALTER TABLE comment
+        ADD CONSTRAINT FK_COMMENT_ON_POST FOREIGN KEY (post_id) REFERENCES post (id);
+
+    CREATE TABLE post_like
+    (
+        member_id BIGINT NOT NULL,
+        post_id   BIGINT NOT NULL,
+        CONSTRAINT pk_postlike PRIMARY KEY (member_id, post_id)
+    );
+
+    ALTER TABLE post_like
+        ADD CONSTRAINT FK_POSTLIKE_ON_MEMBER FOREIGN KEY (member_id) REFERENCES member (id);
+
+    ALTER TABLE post_like
+        ADD CONSTRAINT FK_POSTLIKE_ON_POST FOREIGN KEY (post_id) REFERENCES post (id);
+    
+    -- Dummy data for the member table
+    INSERT INTO member (id, nickname, profile_img_url, code, following_count, follower_count)
+    VALUES (1, 'JohnDoe', '/member-img/default-profile-img.png', 'JD001', 20, 15),
+          (2, 'AliceSmith', '/member-img/default-profile-img.png', 'AS002', 25, 18),
+          (3, 'BobJohnson', '/member-img/default-profile-img.png', 'BJ003', 15, 22),
+          (4, 'BobJohnson', '/member-img/default-profile-img.png', 'BJ003', 15, 22),
+          (5, 'JohnDoe', '/member-img/default-profile-img.png', 'JD001', 20, 15),
+          (6, 'AliceSmith', '/member-img/default-profile-img.png', 'AS002', 25, 18),
+          (7, 'BobJohnson', '/member-img/default-profile-img.png', 'BJ003', 15, 22),
+          (8, 'BobJohnson', '/member-img/default-profile-img.png', 'BJ003', 15, 22),
+          (9, 'JohnDoe', '/member-img/default-profile-img.png', 'JD001', 20, 15),
+          (10, 'AliceSmith', '/member-img/default-profile-img.png', 'AS002', 25, 18),
+          (11, 'BobJohnson', '/member-img/default-profile-img.png', 'BJ003', 15, 22),
+          (12, 'BobJohnson', '/member-img/default-profile-img.png', 'BJ003', 15, 22);
+
+    -- Dummy data for the follow table
+    INSERT INTO follow (follower_id, following_id)
+    VALUES (1, 2),
+          (1, 3),
+          (2, 1),
+          (3, 1),
+          (4, 1),
+          (5, 1),
+          (6, 1),
+          (7, 1),
+          (8, 1),
+          (9, 1),
+          (3, 2);
+
+    -- Dummy data for the post table
+    INSERT INTO post (created_at, updated_at, member_id, title, `description`, stature, weight, view_count, like_count,
+                      comment_count, is_deleted)
+    VALUES (NOW(), NOW(), 1, 'First Post', 'Description for the first post.', 180.5, 75.0, 97, 35, 12, 0),
+          (NOW(), NOW(), 2, 'Awesome Journey', 'Exciting travel adventure.', 160.0, 55.5, 113, 45, 20, 0),
+          (NOW(), NOW(), 3, 'Fitness Goals', 'Working towards fitness goals.', 175.0, 80.0, 80, 28, 15, 0),
+          (NOW(), NOW(), 1, 'Another Post', 'Description for another post.', 170.0, 70.0, 90, 40, 18, 0),
+          (NOW(), NOW(), 2, 'Memorable Trip', 'Memories from a wonderful trip.', 150.0, 60.0, 105, 38, 16, 0),
+          (NOW(), NOW(), 1, 'Sunset Paradise', 'Enjoying a beautiful sunset.', 155.0, 65.0, 95, 42, 14, 0),
+          (NOW(), NOW(), 2, 'Tech Innovations', 'Exploring the latest tech innovations.', 165.0, 70.0, 115, 55, 25, 0),
+          (NOW(), NOW(), 3, 'Healthy Recipes', 'Sharing some delicious and healthy recipes.', 175.0, 75.0, 80, 30, 12, 0),
+          (NOW(), NOW(), 1, 'City Lights', 'Admiring the city lights at night.', 160.0, 68.0, 10, 48, 20, 0),
+          (NOW(), NOW(), 2, 'Wildlife Adventure', 'Encounters with wildlife in the jungle.', 180.0, 85.0, 100, 40, 18, 0),
+          (NOW(), NOW(), 3, 'Gardening Tips', 'Tips for maintaining a beautiful garden.', 150.0, 60.0, 90, 35, 15, 0),
+          (NOW(), NOW(), 1, 'Mountain Trek', 'Scaling new heights in the mountains.', 170.0, 78.0, 130, 60, 28, 0),
+          (NOW(), NOW(), 2, 'Ocean Exploration', 'Diving into the depths of the ocean.', 160.0, 70.0, 105, 45, 22, 0),
+          (NOW(), NOW(), 3, 'Artistic Creations', 'Showcasing some artistic creations.', 155.0, 65.0, 85, 38, 16, 0),
+          (NOW(), NOW(), 1, 'Snowy Adventure', 'Braving the snow in a winter adventure.', 175.0, 82.0, 96, 42, 18, 0),
+          (NOW(), NOW(), 2, 'Culinary Delights', 'Exploring the world of culinary delights.', 165.0, 75.0, 120, 50, 24, 0),
+          (NOW(), NOW(), 1, 'new Adventure', 'Braving the snow in a winter adventure.', 175.0, 82.0, 94, 42, 18, 0),
+          (NOW(), NOW(), 1, 'old Adventure', 'Braving the snow in a winter adventure.', 175.0, 82.0, 37, 42, 18, 0);
+
+    -- Dummy data for the post_image table
+    INSERT INTO post_image (created_at, updated_at, post_id, thumbnail_img_url, img_url)
+    VALUES (NOW(), NOW(), 1, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 2, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 3, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 4, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 5, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 6, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 7, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 8, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 9, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 10, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 11, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 12, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 13, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 14, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 15, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 16, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 17, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png'),
+          (NOW(), NOW(), 18, '/post-img/default-thumbnail-img.png', '/post-img/default-img.png');
+
+    -- Dummy data for the post_image_product_detail table
+    INSERT INTO post_image_product_detail (created_at, updated_at, post_image_id, product_id, product_size,
+                                          left_gap_percent, top_gap_percent)
+    VALUES (NOW(), NOW(), 1, 1, 'Large', 28.000000000000004, 19),
+          (NOW(), NOW(), 1, 2, 'Small', 41.099999999999994, 19),
+          (NOW(), NOW(), 2, 2, 'Medium', 41.099999999999994, 19),
+          (NOW(), NOW(), 3, 3, 'Small', 28.000000000000004, 19),
+          (NOW(), NOW(), 4, 1, 'Large', 28.000000000000004, 19),
+          (NOW(), NOW(), 5, 2, 'Medium', 28.000000000000004, 19),
+          (NOW(), NOW(), 6, 3, 'Small', 41.099999999999994, 19),
+          (NOW(), NOW(), 7, 1, 'Large', 41.099999999999994, 19),
+          (NOW(), NOW(), 8, 2, 'Medium', 41.099999999999994, 19),
+          (NOW(), NOW(), 9, 3, 'Small', 28.000000000000004, 19),
+          (NOW(), NOW(), 10, 1, 'Large', 28.000000000000004, 19),
+          (NOW(), NOW(), 11, 2, 'Medium', 41.099999999999994, 19),
+          (NOW(), NOW(), 12, 3, 'Small', 41.099999999999994, 19),
+          (NOW(), NOW(), 13, 1, 'Large', 28.000000000000004, 19),
+          (NOW(), NOW(), 14, 2, 'Medium', 28.000000000000004, 19),
+          (NOW(), NOW(), 15, 3, 'Small', 41.099999999999994, 19),
+          (NOW(), NOW(), 16, 1, 'Large', 41.099999999999994, 19),
+          (NOW(), NOW(), 17, 3, 'Small', 41.099999999999994, 19),
+          (NOW(), NOW(), 18, 1, 'Large', 28.000000000000004, 19);
+
+    -- Dummy data for the post_like table
+    INSERT INTO post_like (member_id, post_id)
+    VALUES (1, 1),
+          (1, 2),
+          (2, 3),
+          (3, 1);
+
+    -- Dummy data for the comment table
+    INSERT INTO comment (created_at, updated_at, parent_id, member_id, post_id, description)
+    VALUES (NOW(), NOW(), NULL, 1, 2, 'Great post!'),
+          (NOW(), NOW(), NULL, 2, 3, 'Keep up the good work!'),
+          (NOW(), NOW(), NULL, 2, 3, 'Keep up the good work!'),
+          (NOW(), NOW(), NULL, 2, 3, 'Keep up the good work!'),
+          (NOW(), NOW(), NULL, 2, 3, 'Keep up the good work!'),
+          (NOW(), NOW(), NULL, 2, 3, 'Keep up the good work!'),
+          (NOW(), NOW(), NULL, 2, 3, 'Keep up the good work!'),
+          (NOW(), NOW(), 2, 1, 3, 'I agree with you.'),
+          (NOW(), NOW(), 2, 1, 3, 'I agree with you.'),
+          (NOW(), NOW(), 2, 1, 3, 'I agree with you.'),
+          (NOW(), NOW(), 3, 1, 3, 'I agree with you.'),
+          (NOW(), NOW(), 4, 1, 3, 'I agree with you.'),
+          (NOW(), NOW(), 5, 1, 3, 'I agree with you.');
+
+    -- Dummy data for the hash_tag table
+    INSERT INTO hash_tag (name, created_at, updated_at, post_id)
+    VALUES ('travel', NOW(), NOW(), 1),
+          ('fitness', NOW(), NOW(), 2),
+          ('adventure', NOW(), NOW(), 3),
+          ('travel', NOW(), NOW(), 4),
+          ('fitness', NOW(), NOW(), 5),
+          ('adventure', NOW(), NOW(), 6),
+          ('travel', NOW(), NOW(), 7),
+          ('fitness', NOW(), NOW(), 8),
+          ('adventure', NOW(), NOW(), 9),
+          ('travel', NOW(), NOW(), 10),
+          ('fitness', NOW(), NOW(), 11),
+          ('adventure', NOW(), NOW(), 12),
+          ('travel', NOW(), NOW(), 13),
+          ('fitness', NOW(), NOW(), 14),
+          ('adventure', NOW(), NOW(), 15),
+          ('travel', NOW(), NOW(), 16),
+          ('fitness', NOW(), NOW(), 17),
+          ('adventure', NOW(), NOW(), 18);

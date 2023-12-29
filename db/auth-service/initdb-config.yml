@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-initdb-config
+  namespace: dev
+data:
+  initdb.sql: |
+    use auth-db-service;
+    
+    CREATE TABLE `auth` (
+      `id`	BIGINT	NOT NULL,
+      `email`	VARCHAR(255)	NOT NULL,
+      `password`	VARCHAR(255)	NULL,
+      `role`	VARCHAR(255)	NOT NULL,
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    
+    INSERT INTO `auth` (id, email, password, role)
+    VALUES (2,'admin','$2a$10$Im1Uew.PfDK1zNDwfHyInOgro.hc5oNEH7wztDTQ54ASYK.UMNbGS','ROLE_ADMIN');
