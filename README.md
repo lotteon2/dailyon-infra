@@ -60,3 +60,28 @@ docker exec -it [CONTAINER_NAME] kafka-console-consumer.sh --topic create-order 
 ```shell
 docker exec -it [CONTAINER_NAME] kafka-console-producer.sh --topic create-order --broker-list localhost:9092
 ```
+
+### 운영 환경
+
+* pod 안에서 실행
+
+* 토픽 생성
+
+```shell
+kafka-topics --bootstrap-server localhost:9092 --create --topic approve-payment
+kafka-topics --bootstrap-server localhost:9092 --create --topic cancel-order
+kafka-topics --bootstrap-server localhost:9092 --create --topic create-order
+kafka-topics --bootstrap-server localhost:9092 --create --topic create-order-product
+kafka-topics --bootstrap-server localhost:9092 --create --topic create-order-use-coupon
+kafka-topics --bootstrap-server localhost:9092 --create --topic create-review
+kafka-topics --bootstrap-server localhost:9092 --create --topic use-member-points
+
+kafka-topics --bootstrap-server localhost:9092 --create --topic create-member-for-sns
+kafka-topics --bootstrap-server localhost:9092 --create --topic update-member-for-sns
+```
+
+* 토픽 목록 조회
+
+```shell
+kafka-topics --bootstrap-server localhost:9092 --list
+```
