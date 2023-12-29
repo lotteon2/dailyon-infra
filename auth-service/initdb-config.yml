@@ -16,4 +16,4 @@ data:
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
     
     INSERT INTO `auth` (id, email, password, role)
-    VALUES (3,'admin','$2a$10$Im1Uew.PfDK1zNDwfHyInOgro.hc5oNEH7wztDTQ54ASYK.UMNbGS','ROLE_ADMIN');
+    VALUES (0,'admin','$2a$10$Im1Uew.PfDK1zNDwfHyInOgro.hc5oNEH7wztDTQ54ASYK.UMNbGS','ROLE_ADMIN');
