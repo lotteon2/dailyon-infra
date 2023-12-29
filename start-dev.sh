@@ -6,6 +6,10 @@ kubectl label node dailyon-m03 type=Util
 kubectl label node dailyon-m03 size=Small
 kubectl label node dailyon-m04 type=Kafka
 kubectl label node dailyon-m05 type=Redis
+kubectl label node dailyon-m06 type=App
+kubectl label node dailyon-m06 size=Medium
+kubectl label node dailyon-m07 type=App
+kubectl label node dailyon-m07 size=Medium
 
 kubectl create -f ./kube-config/dev/namespace.yml
 kubectl create -f ./kube-config/dev/mysql-config.yml
@@ -107,3 +111,7 @@ kubectl create -f ./wish-cart-service/service.yml
 kubectl apply -f ./auction-service/initdb-config.yml
 kubectl create -f ./auction-service/deployment.yml
 kubectl create -f ./auction-service/service.yml
+
+kubectl apply -f ./search-service/initdb-config.yml
+kubectl create -f ./search-service/deployment.yml
+kubectl create -f ./search-service/service.yml
