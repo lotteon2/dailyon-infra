@@ -29,13 +29,6 @@ spec:
       containers:
         - name: kafka1
           image: confluentinc/cp-kafka
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "1000m"
-            limits:
-              memory: "768Mi"
-              cpu: "1500m"
           ports:
           - containerPort: 9092
           env:
