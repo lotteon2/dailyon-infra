@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: notification-db-statefulset
+  namespace: prod
+  labels:
+    app: notification-db-service
+spec:
+  serviceName: notification-db-service
+  selector:
+    matchLabels:
+      app: notification-db-service
+  replicas: 1
+  template:
+    metadata:
+      name: notification-db-pod
+      labels:
+        app: notification-db-service
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:latest
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "375m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: root
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "11111111"
+            - name: MONGO_INITDB_DATABASE
+              value: notification-service
+          volumeMounts:
+            - name: notification-ebs-pv
+              mountPath: /data/db
+          # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 20
+            periodSeconds: 20
+      volumes:
+        - name: notification-ebs-pv
+          persistentVolumeClaim:
+            claimName: notification-ebs-pvc
+      # SIGTERM을 받아도 바로 종료되지 않고 180초 뒤에 종료
+      terminationGracePeriodSeconds: 120
+      restartPolicy: Always
+      affinity:
+        nodeAffinity:
+          # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - Database
+                  - key: size
+                    operator: In
+                    values:
+                      - XLarge

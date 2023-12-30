@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: product-initdb-config
-  namespace: dev
+  namespace: prod
 data:
   initdb.sql: |
     use product-db-service;

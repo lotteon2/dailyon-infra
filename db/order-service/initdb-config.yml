@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-initdb-config
+  namespace: prod
+data:
+  initdb.sql: |
+    CREATE TABLE `orders` (
+    `id` bigint NOT NULL AUTO_INCREMENT,
+    `created_at` datetime(6) DEFAULT NULL,
+    `updated_at` datetime(6) DEFAULT NULL,
+    `delivery_fee` int DEFAULT '0',
+    `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+    `member_id` bigint NOT NULL,
+    `order_no` varchar(255) NOT NULL,
+    `products_name` varchar(255) NOT NULL,
+    `status` varchar(255) NOT NULL,
+    `total_amount` bigint NOT NULL,
+    `total_coupon_discount_price` int DEFAULT '0',
+    `type` varchar(255) NOT NULL,
+    `used_points` int DEFAULT '0',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_order_no` (`order_no`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    
+    CREATE TABLE `order_detail` (
+    `id` bigint NOT NULL AUTO_INCREMENT,
+    `created_at` datetime(6) DEFAULT NULL,
+    `updated_at` datetime(6) DEFAULT NULL,
+    `coupon_discount_price` int DEFAULT NULL,
+    `coupon_info_id` bigint DEFAULT NULL,
+    `coupon_name` varchar(255) DEFAULT NULL,
+    `order_detail_no` varchar(255) NOT NULL,
+    `order_no` varchar(255) NOT NULL,
+    `order_price` int NOT NULL,
+    `product_gender` varchar(255) NOT NULL,
+    `product_id` bigint NOT NULL,
+    `product_img_url` varchar(255) NOT NULL,
+    `product_name` varchar(255) NOT NULL,
+    `product_quantity` int NOT NULL,
+    `product_size` varchar(255) NOT NULL,
+    `product_size_id` bigint NOT NULL,
+    `review_check` tinyint(1) NOT NULL DEFAULT '0',
+    `status` varchar(255) NOT NULL,
+    `order_id` bigint NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_order_detail_no` (`order_detail_no`),
+    KEY `FKrws2q0si6oyd6il8gqe2aennc` (`order_id`),
+    CONSTRAINT `FKrws2q0si6oyd6il8gqe2aennc` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    
+    CREATE TABLE `refund` (
+    `id` bigint NOT NULL AUTO_INCREMENT,
+    `created_at` datetime(6) DEFAULT NULL,
+    `updated_at` datetime(6) DEFAULT NULL,
+    `points` int DEFAULT '0',
+    `price` int NOT NULL,
+    `order_id` bigint DEFAULT NULL,
+    `order_detail_id` bigint NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `UK_s54xxpsocfdbdvtuinx2au4a2` (`order_detail_id`),
+    KEY `FK80vls36avhp4yl7h8apkqm0ek` (`order_id`),
+    CONSTRAINT `FK80vls36avhp4yl7h8apkqm0ek` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
+    CONSTRAINT `FKhiat16hmdhq3swxy6bvay0unl` FOREIGN KEY (`order_detail_id`) REFERENCES `order_detail` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    
+    CREATE TABLE `delivery` (
+    `id` bigint NOT NULL AUTO_INCREMENT,
+    `created_at` datetime(6) DEFAULT NULL,
+    `updated_at` datetime(6) DEFAULT NULL,
+    `detail_address` varchar(255) NOT NULL,
+    `phone_number` varchar(255) DEFAULT NULL,
+    `post_code` varchar(255) NOT NULL,
+    `receiver` varchar(255) NOT NULL,
+    `road_address` varchar(255) NOT NULL,
+    `status` varchar(255) NOT NULL,
+    `order_id` bigint NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `FKu4e8rjwmg09vmas3ccjwglso` (`order_id`),
+    CONSTRAINT `FKu4e8rjwmg09vmas3ccjwglso` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  
+

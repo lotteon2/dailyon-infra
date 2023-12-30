@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: review-ebs-pv
+spec:
+  volumeMode: Filesystem
+  storageClassName: gp2
+  capacity:
+    storage: 10Gi # 볼륨의 크기
+  accessModes:
+    - ReadWriteOnce # 하나의 Pod에 마운트
+  awsElasticBlockStore:
+    volumeID: vol-0461f42ce43af404a
+  persistentVolumeReclaimPolicy: Retain

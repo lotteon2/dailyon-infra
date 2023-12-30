@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: promotion-ebs-pv
+spec:
+  volumeMode: Filesystem
+  storageClassName: gp2
+  capacity:
+    storage: 10Gi # 볼륨의 크기
+  accessModes:
+    - ReadWriteOnce # 하나의 Pod에 마운트
+  awsElasticBlockStore:
+    volumeID: vol-096ae2a7d0c53f2d3
+  persistentVolumeReclaimPolicy: Retain

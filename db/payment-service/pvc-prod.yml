@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: payment-ebs-pvc
+  namespace: prod
+spec:
+  storageClassName: gp2
+  accessModes:
+    - ReadWriteOnce # 하나의 노드가 Read/Write 가능하도록 마운트
+  resources:
+    requests:
+      storage: 10Gi # 볼륨 크기가 최소 10Gi인 퍼시스턴트 볼륨과 연결
