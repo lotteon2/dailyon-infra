@@ -18,6 +18,7 @@ data:
       `nickname` varchar(255) NOT NULL,
       `order_detail_no` varchar(255) NOT NULL,
       `product_id` bigint NOT NULL,
+      `product_size` varchar(255) NOT NULL,
       `profile_img_url` varchar(255) NOT NULL,
       `rating` float NOT NULL,
       PRIMARY KEY (`id`),
