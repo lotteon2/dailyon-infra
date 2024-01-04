@@ -110,6 +110,7 @@ module "eks" {
         }
       })
     }
+
     aws-ebs-csi-driver = {
       most_recent              = true
       service_account_role_arn = module.ebs_csi_irsa_role.iam_role_arn
@@ -165,64 +166,46 @@ module "eks" {
         type = "App"
         size = "Large"
       }
-
-      additional_tags = {
-        Name = "DailyonApp1"
-      }
     }
 
-    app2 = {
-      desired_size = 1
-      max_size     = 2
-      min_size     = 1
-
-      instance_types = ["t3.medium"]
-
-      labels = {
-        type = "App"
-        size = "Medium"
-      }
-
-      additional_tags = {
-        Name = "DailyonApp2"
-      }
-    }
+    #        app2 = {
+    #          desired_size = 1
+    #          max_size     = 2
+    #          min_size     = 1
+    #
+    #          instance_types = ["t3.large"]
+    #
+    #          labels = {
+    #            type = "App"
+    #            size = "Large"
+    #          }
+    #        }
 
     db1 = {
       desired_size = 1
       max_size     = 2
       min_size     = 1
 
-      instance_types = ["t3.xlarge"]
+      instance_types = ["t3.large"]
 
       labels = {
         type = "Database"
-        size = "XLarge"
-      }
-
-      additional_tags = {
-        Name = "DailyonDB1"
-      }
-
-      subnet_ids = []
-    }
-
-    db2 = {
-      desired_size = 1
-      max_size     = 2
-      min_size     = 1
-
-      instance_types = ["t3.xlarge"]
-
-      labels = {
-        type = "Database"
-        size = "XLarge"
-      }
-
-      additional_tags = {
-        Name = "DailyonDB2"
+        size = "Large"
       }
     }
+
+    #        db2 = {
+    #          desired_size = 1
+    #          max_size     = 2
+    #          min_size     = 1
+    #
+    #          instance_types = ["t3.large"]
+    #
+    #          labels = {
+    #            type = "Database"
+    #            size = "Large"
+    #          }
+    #        }
 
     util = {
       name = "util"
@@ -231,15 +214,11 @@ module "eks" {
       max_size     = 2
       min_size     = 1
 
-      instance_types = ["t3.small"]
+      instance_types = ["t3.medium"]
 
       labels = {
         type = "Util"
-        size = "Small"
-      }
-
-      additional_tags = {
-        Name = "DailyonUtil"
+        size = "Medium"
       }
     }
 
@@ -253,10 +232,6 @@ module "eks" {
       labels = {
         type = "Kafka"
       }
-
-      additional_tags = {
-        Name = "DailyonKafka"
-      }
     }
 
     redis = {
@@ -268,10 +243,6 @@ module "eks" {
 
       labels = {
         type = "Redis"
-      }
-
-      additional_tags = {
-        Name = "DailyonRedis"
       }
     }
   }
@@ -452,10 +423,10 @@ resource "helm_release" "external_dns" {
 }
 
 module "ebs_csi_irsa_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source                = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   role_name             = "AmazonEKS_EBS_CSI_DriverRole"
   attach_ebs_csi_policy = true
-  oidc_providers = {
+  oidc_providers        = {
     ex = {
       provider_arn               = module.eks.oidc_provider_arn
       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]

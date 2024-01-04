@@ -7,7 +7,7 @@ locals {
 }
 
 resource "aws_s3_bucket" "frontend_s3" {
-  bucket = "dailyon-frontend"
+  bucket = "dailyon-static-frontend"
 
   tags = {
     Terraform   = "true"
