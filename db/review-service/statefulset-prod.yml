@@ -83,3 +83,4 @@ spec:
                     operator: In
                     values:
                       - Large
+                      - Medium

@@ -168,18 +168,18 @@ module "eks" {
       }
     }
 
-    #        app2 = {
-    #          desired_size = 1
-    #          max_size     = 2
-    #          min_size     = 1
-    #
-    #          instance_types = ["t3.large"]
-    #
-    #          labels = {
-    #            type = "App"
-    #            size = "Large"
-    #          }
-    #        }
+    app2 = {
+      desired_size = 1
+      max_size     = 2
+      min_size     = 1
+
+      instance_types = ["t3.large"]
+
+      labels = {
+        type = "App"
+        size = "Large"
+      }
+    }
 
     db1 = {
       desired_size = 1
@@ -194,18 +194,18 @@ module "eks" {
       }
     }
 
-    #        db2 = {
-    #          desired_size = 1
-    #          max_size     = 2
-    #          min_size     = 1
-    #
-    #          instance_types = ["t3.large"]
-    #
-    #          labels = {
-    #            type = "Database"
-    #            size = "Large"
-    #          }
-    #        }
+    db2 = {
+      desired_size = 1
+      max_size     = 2
+      min_size     = 1
+
+      instance_types = ["t3.medium"]
+
+      labels = {
+        type = "Database"
+        size = "Medium"
+      }
+    }
 
     util = {
       name = "util"
