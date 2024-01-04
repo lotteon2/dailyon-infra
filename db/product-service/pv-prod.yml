@@ -1,14 +1,15 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: product-ebs-pv
+  name: product-efs-pv
 spec:
-  volumeMode: Filesystem
-  storageClassName: gp2
   capacity:
-    storage: 10Gi # 볼륨의 크기
+    storage: 5Gi
+  volumeMode: Filesystem
   accessModes:
-    - ReadWriteOnce # 하나의 Pod에 마운트
-  awsElasticBlockStore:
-    volumeID: vol-0bbfc33fb6357a532
+    - ReadWriteMany
+  storageClassName: "product-efs-sc"
   persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-0f1f08db394379a7f

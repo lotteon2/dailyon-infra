@@ -26,7 +26,7 @@ spec:
               cpu: "250m"
             limits:
               memory: "512Mi"
-              cpu: "500m"
+              cpu: "300m"
           ports:
             - containerPort: 27017
           env:
@@ -35,9 +35,9 @@ spec:
             - name: MONGO_INITDB_ROOT_PASSWORD
               value: "11111111"
             - name: MONGO_INITDB_DATABASE
-              value: wish-cart-db-service
+              value: wish-cart-service
           volumeMounts:
-            - name: wish-cart-ebs-pv
+            - name: wish-cart-efs-pv
               mountPath: /data/db
           imagePullPolicy: IfNotPresent
           # 애플리케이션이 시작된 뒤 초기화 작업이 마무리되어 준비되었는지 검사
@@ -53,9 +53,9 @@ spec:
             initialDelaySeconds: 20
             periodSeconds: 20
       volumes:
-        - name: wish-cart-ebs-pv
+        - name: wish-cart-efs-pv
           persistentVolumeClaim:
-            claimName: wish-cart-ebs-pvc
+            claimName: wish-cart-efs-pvc
       # SIGTERM을 받아도 바로 종료되지 않고 180초 뒤에 종료
       terminationGracePeriodSeconds: 120
       restartPolicy: Always
@@ -72,4 +72,4 @@ spec:
                   - key: size
                     operator: In
                     values:
-                      - XLarge
+                      - Large

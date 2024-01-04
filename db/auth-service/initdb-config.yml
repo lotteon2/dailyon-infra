@@ -5,7 +5,7 @@ metadata:
   namespace: prod
 data:
   initdb.sql: |
-    use auth-db-service;
+    use auth-service;
     
     CREATE TABLE `auth` (
       `id`	BIGINT	NOT NULL,

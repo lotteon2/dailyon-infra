@@ -5,6 +5,8 @@ metadata:
   namespace: prod
 data:
   initdb.sql: |
+    use order-service;
+    
     CREATE TABLE `orders` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `created_at` datetime(6) DEFAULT NULL,
@@ -79,5 +81,18 @@ data:
     KEY `FKu4e8rjwmg09vmas3ccjwglso` (`order_id`),
     CONSTRAINT `FKu4e8rjwmg09vmas3ccjwglso` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-  
-
+    
+    CREATE TABLE `gifts` (
+    `id` bigint NOT NULL AUTO_INCREMENT,
+    `created_at` datetime(6) DEFAULT NULL,
+    `updated_at` datetime(6) DEFAULT NULL,
+    `order_no` varchar(255) DEFAULT NULL,
+    `receiver_id` bigint DEFAULT NULL,
+    `receiver_name` varchar(255) NOT NULL,
+    `sender_name` varchar(255) NOT NULL,
+    `status` varchar(255) DEFAULT NULL,
+    `order_id` bigint DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `UK_skjdumywl43j686jlnlbncawm` (`order_id`),
+    CONSTRAINT `FKc69uucyykecrqqqa5vunt7p7r` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

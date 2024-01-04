@@ -5,7 +5,7 @@ metadata:
   namespace: prod
 data:
   initdb.sql: |
-    use payment-db-service;
+    use payment-service;
     
     CREATE TABLE `payment` (
     `id` bigint NOT NULL AUTO_INCREMENT,

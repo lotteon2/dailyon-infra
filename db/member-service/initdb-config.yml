@@ -5,7 +5,7 @@ metadata:
   namespace: prod
 data:
   initdb.sql: |
-    use member-db-service;
+    use member-service;
     
     CREATE TABLE `member` (
       `id` BIGINT NOT NULL AUTO_INCREMENT,
