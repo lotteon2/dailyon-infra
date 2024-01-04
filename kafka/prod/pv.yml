@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kafka-cluster-pv
+  namespace: prod
+spec:
+  volumeMode: Filesystem
+  storageClassName: gp2
+  capacity:
+    storage: 30Gi # 볼륨의 크기
+  accessModes:
+    - ReadWriteOnce # 하나 Pod에 마운트
+  awsElasticBlockStore:
+    volumeID: vol-023e7ce15bd9e95d7
+  persistentVolumeReclaimPolicy: Retain
