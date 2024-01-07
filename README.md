@@ -131,6 +131,7 @@ kafka-topics --bootstrap-server localhost:9092 --create --topic create-order-pro
 kafka-topics --bootstrap-server localhost:9092 --create --topic create-order-use-coupon
 kafka-topics --bootstrap-server localhost:9092 --create --topic create-review
 kafka-topics --bootstrap-server localhost:9092 --create --topic use-member-points
+kafka-topics --bootstrap-server localhost:9092 --create --topic create-refund
 
 kafka-topics --bootstrap-server localhost:9092 --create --topic create-member-for-sns
 kafka-topics --bootstrap-server localhost:9092 --create --topic update-member-for-sns

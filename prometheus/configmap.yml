@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-service-config
+  namespace: prod
+  labels:
+    name: prometheus-service-config
+data:
+  prometheus.yml: |-
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+
+      - job_name: 'config-service'
+        static_configs:
+          - targets: [ 'config-service:8888' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'apigateway-service'
+        static_configs:
+          - targets: [ 'apigateway-service:8000' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'member-service'
+        static_configs:
+          - targets: [ 'member-service:8080' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'auth-service'
+        static_configs:
+          - targets: ['auth-service:8081']
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'notification-service'
+        static_configs:
+          - targets: [ 'notification-service:8082' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'auction-service'
+        static_configs:
+          - targets: [ 'auction-service:8083' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'promotion-service'
+        static_configs:
+          - targets: [ 'promotion-service:8084' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'product-service'
+        static_configs:
+          - targets: [ 'product-service:8085' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'wish-cart-service'
+        static_configs:
+          - targets: [ 'wish-cart-service:8086' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'review-service'
+        static_configs:
+          - targets: [ 'review-service:8087' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'sns-service'
+        static_configs:
+          - targets: [ 'sns-service:8088' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'order-service'
+        static_configs:
+          - targets: [ 'order-service:8089' ]
+        metrics_path: '/actuator/prometheus'
+      - job_name: 'payment-service'
+        static_configs:
+          - targets: [ 'payment-service:8090' ]
+        metrics_path: '/actuator/prometheus'

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+  namespace: prod
+  labels:
+    app: grafana-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana-service
+  template:
+    metadata:
+      name: grafana-pod
+      labels:
+        app: grafana-service
+    spec:
+      containers:
+        - name: grafana-service
+          image: grafana/grafana
+          ports:
+            - containerPort: 3000
+      affinity:
+        nodeAffinity:
+          # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - Util
+                  - key: size
+                    operator: In
+                    values:
+                      - Small
+                      - Medium

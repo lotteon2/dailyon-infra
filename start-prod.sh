@@ -14,6 +14,16 @@ kubectl create -f ./kafka/prod/service.yml
 kubectl create -f ./rabbitmq/prod/deployment.yml
 kubectl create -f ./rabbitmq/prod/service.yml
 
+kubectl create -f ./zipkin/deployment.yml
+kubectl create -f ./zipkin/service.yml
+
+kubectl create -f ./grafana/deployment.yml
+kubectl create -f ./grafana/service.yml
+
+kubectl create -f ./prometheus/configmap.yml
+kubectl create -f ./prometheus/deployment.yml
+kubectl create -f ./prometheus/service.yml
+
 kubectl create -f ./db/auth-service/sc-prod.yml
 kubectl create -f ./db/auth-service/pv-prod.yml
 kubectl create -f ./db/auth-service/pvc-prod.yml

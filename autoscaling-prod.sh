@@ -1,0 +1,12 @@
+kubectl autoscale deployment apigateway-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment auction-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment auth-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment member-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment notification-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment order-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment payment-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment product-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment promotion-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment review-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment sns-deployment --cpu-percent=60 --min=1 --max=2 -n prod
+kubectl autoscale deployment wish-cart-deployment --cpu-percent=60 --min=1 --max=2 -n prod

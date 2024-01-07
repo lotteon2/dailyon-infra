@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+  namespace: prod
+  labels:
+    app: prometheus-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-service
+  template:
+    metadata:
+      name: prometheus-pod
+      labels:
+        app: prometheus-service
+    spec:
+      containers:
+        - name: prometheus-service
+          image: prom/prometheus:v2.30.0
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "384Mi"
+              cpu: "250m"
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: prometheus-service-config
+              mountPath: /etc/prometheus/prometheus.yml
+              subPath: prometheus.yml
+      volumes:
+        - name: prometheus-service-config
+          configMap:
+            name: prometheus-service-config
+      affinity:
+        nodeAffinity:
+          # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - Util
+                  - key: size
+                    operator: In
+                    values:
+                      - Small
+                      - Medium

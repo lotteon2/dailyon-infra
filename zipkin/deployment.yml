@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin-deployment
+  namespace: prod
+  labels:
+    app: zipkin-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zipkin-service
+  template:
+    metadata:
+      name: zipkin-pod
+      labels:
+        app: zipkin-service
+    spec:
+      containers:
+        - name: zipkin-service
+          image: openzipkin/zipkin
+          resources:
+            requests:
+              memory: "384Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "300m"
+          ports:
+            - containerPort: 9411
+      affinity:
+        nodeAffinity:
+          # Pod이 존재하지 않다가 처음으로 만들어지는 상태, 이미 실행중인데 nodeSelector가 node에서 제거된다면 계속 실행
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - Util
+                  - key: size
+                    operator: In
+                    values:
+                      - Small
+                      - Medium

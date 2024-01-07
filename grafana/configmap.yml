@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+data:
+  grafana.ini: |
+    # grafana.ini
+
+    # Set the root URL for Grafana.
+      root_url = %(protocol)s://%(domain)s:%(http_port)s/grafana/
+      
+      # Set the default admin password.
+      admin_password = admin
+  
+    # Enable anonymous access.
+      [auth.anonymous]
+      enabled = true
+    
+    # Set the default theme to dark.
+      [theme]
+      default_theme = dark
+    
+    # Configure Prometheus as a data source.
+      [[datasource]]
+      name = Prometheus
+      type = prometheus
+      url = http://prometheus-service:9090
+      access = proxy
+      is_default = true
+
