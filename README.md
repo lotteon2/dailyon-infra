@@ -70,6 +70,16 @@ eksctl create addon --cluster dailyon --name aws-efs-csi-driver --version latest
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
 
+### Prometheus Grafana 구축
+
+```shell
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus prometheus-community/kube-prometheus-stack --namespace prod
+```
+
+- grafana 계정은 admin 비밀번호는 prom-operator
+
 ## Redis 가이드
 
 - 클러스터 구성(6개의 Pod이 뜬 후 실행)
