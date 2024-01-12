@@ -13,11 +13,14 @@ data:
     `updated_at` datetime(6) DEFAULT NULL,
     `member_id` bigint NOT NULL,
     `method` varchar(255) NOT NULL,
+    `order_no` varchar(255) NOT NULL,
     `status` varchar(255) NOT NULL,
     `total_amount` int NOT NULL,
     `type` varchar(255) NOT NULL,
     PRIMARY KEY (`id`),
-    KEY `idx_type` (`type`)
+    UNIQUE KEY `UK_acu1xke25mrqhk466afx4eqs6` (`order_no`),
+    KEY `idx_type` (`type`),
+    KEY `idx_order_no` (`order_no`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
     
     CREATE TABLE `kakaopay_info` (
