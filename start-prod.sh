@@ -6,6 +6,7 @@ kubectl create -f ./redis/prod/cluster/configmap.yml
 kubectl create -f ./redis/prod/cluster/statefulset.yml
 kubectl create -f ./redis/prod/cluster/service.yml
 
+kubectl create -f ./kafka/prod/sc.yml
 kubectl create -f ./kafka/prod/pv.yml
 kubectl create -f ./kafka/prod/pvc.yml
 kubectl create -f ./kafka/prod/deployment.yml
