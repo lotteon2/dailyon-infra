@@ -1,0 +1,4 @@
+MySQL 으로 CSV 데이터 적재
+
+LOAD DATA LOCAL INFILE '/category.csv' INTO TABLE restaurant FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (@var1, @var2, @var3) SET name = @var1, master_category_id = @var2, id = @var3;
+LOAD DATA LOCAL INFILE '/brand.csv' INTO TABLE restaurant FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (@var1, @var2) SET name = @var1, id = @var2;
