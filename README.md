@@ -80,6 +80,23 @@ helm install prometheus prometheus-community/kube-prometheus-stack --namespace p
 
 - grafana 계정은 admin 비밀번호는 prom-operator
 
+### Install Kubeops
+
+```shell
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+helm version --short
+
+helm repo add stable https://charts.helm.sh/stable
+
+helm repo add k8s-at-home https://k8s-at-home.com/charts/
+
+helm repo update
+
+helm install kube-ops-view k8s-at-home/kube-ops-view -n prod
+
+```
+
 ## Redis 가이드
 
 - 클러스터 구성(6개의 Pod이 뜬 후 실행)
