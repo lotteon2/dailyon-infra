@@ -162,6 +162,9 @@ kafka-topics --bootstrap-server localhost:9092 --create --topic create-refund
 
 kafka-topics --bootstrap-server localhost:9092 --create --topic create-member-for-sns
 kafka-topics --bootstrap-server localhost:9092 --create --topic update-member-for-sns
+
+kafka-topics --bootstrap-server localhost:9092 --create --topic success-bidding
+kafka-topics --bootstrap-server localhost:9092 --create --topic cancel-bidding
 ```
 
 * 토픽 목록 조회
